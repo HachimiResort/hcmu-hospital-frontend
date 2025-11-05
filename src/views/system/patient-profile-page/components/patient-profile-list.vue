@@ -188,10 +188,10 @@
 
   // 身份类型选项（本地定义，如有后端字典可替换）
   const identityOptions = ref([
-    { value: undefined, label: t('patientProfilePage.identity.all') },
+    { value: '', label: t('patientProfilePage.identity.all') },
     { value: 1, label: t('patientProfilePage.identity.student') },
     { value: 2, label: t('patientProfilePage.identity.teacher') },
-    { value: 3, label: t('patientProfilePage.identity.other') },
+    { value: 0, label: t('patientProfilePage.identity.other') },
   ]);
 
   // 将 identityType 的值映射为文本标签。1 -> student, 2 -> teacher, 其他 -> other
