@@ -57,7 +57,7 @@
               <a-list-item-meta>
                 <template #avatar>
                   <a-avatar>
-                    <icon-user />
+                    <img :src="doctorAvatar" alt="doctor" />
                   </a-avatar>
                 </template>
                 <template #title>
@@ -89,6 +89,7 @@
     getAllDoctorProfiles,
     DoctorProfileListDTO,
   } from '@/api/doctor-profile';
+  import doctorAvatar from '@/assets/doctor.jpg';
 
   const { t } = useI18n();
   const { loading, setLoading } = useLoading(true);
