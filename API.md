@@ -348,6 +348,605 @@
 ```
 
 
+# 患者档案接口
+
+
+## 查询患者档案列表('CHECK_PATIENT')
+
+
+**接口地址**:`/patient-profiles`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>分页查询患者档案列表</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|PatientProfileGetRequestDTO|PatientProfileGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;identityType|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTOPatientProfileListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTOPatientProfileListDTO|PageDTOPatientProfileListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|PatientProfileListDTO|
+|&emsp;&emsp;&emsp;&emsp;patientProfileId||integer||
+|&emsp;&emsp;&emsp;&emsp;userId||integer||
+|&emsp;&emsp;&emsp;&emsp;userName||string||
+|&emsp;&emsp;&emsp;&emsp;identityType||integer||
+|&emsp;&emsp;&emsp;&emsp;studentTeacherId||string||
+|&emsp;&emsp;&emsp;&emsp;emergencyContact||string||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"patientProfileId": 0,
+				"userId": 0,
+				"userName": "",
+				"identityType": 0,
+				"studentTeacherId": "",
+				"emergencyContact": "",
+				"createTime": ""
+			}
+		]
+	}
+}
+```
+
+
+## 创建患者档案('ADD_PATIENT')
+
+
+**接口地址**:`/patient-profiles`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>创建患者档案</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "userId": 0,
+  "identityType": 0,
+  "studentTeacherId": "",
+  "emergencyContact": "",
+  "emergencyContactPhone": "",
+  "medicalHistory": "",
+  "allergyHistory": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|patientProfileCreateDTO|PatientProfileCreateDTO|body|true|PatientProfileCreateDTO|PatientProfileCreateDTO|
+|&emsp;&emsp;userId|||true|integer(int64)||
+|&emsp;&emsp;identityType|||true|integer(int32)||
+|&emsp;&emsp;studentTeacherId|||false|string||
+|&emsp;&emsp;emergencyContact|||false|string||
+|&emsp;&emsp;emergencyContactPhone|||false|string||
+|&emsp;&emsp;medicalHistory|||false|string||
+|&emsp;&emsp;allergyHistory|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPatientProfileListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PatientProfileListDTO|PatientProfileListDTO|
+|&emsp;&emsp;patientProfileId||integer(int64)||
+|&emsp;&emsp;userId||integer(int64)||
+|&emsp;&emsp;userName||string||
+|&emsp;&emsp;identityType||integer(int32)||
+|&emsp;&emsp;studentTeacherId||string||
+|&emsp;&emsp;emergencyContact||string||
+|&emsp;&emsp;createTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"patientProfileId": 0,
+		"userId": 0,
+		"userName": "",
+		"identityType": 0,
+		"studentTeacherId": "",
+		"emergencyContact": "",
+		"createTime": ""
+	}
+}
+```
+
+
+## 删除患者档案('DEL_PATIENT')
+
+
+**接口地址**:`/patient-profiles/{patientProfileId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除患者档案</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|patientProfileId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 获取患者档案详情(‘CHECK_PATIENT’)
+
+
+**接口地址**:`/patient-profiles/{userId}`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取患者档案详情</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|userId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPatientProfileDetailDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PatientProfileDetailDTO|PatientProfileDetailDTO|
+|&emsp;&emsp;patientProfileId||integer(int64)||
+|&emsp;&emsp;userId||integer(int64)||
+|&emsp;&emsp;userName||string||
+|&emsp;&emsp;identityType||integer(int32)||
+|&emsp;&emsp;studentTeacherId||string||
+|&emsp;&emsp;emergencyContact||string||
+|&emsp;&emsp;emergencyContactPhone||string||
+|&emsp;&emsp;medicalHistory||string||
+|&emsp;&emsp;allergyHistory||string||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"patientProfileId": 0,
+		"userId": 0,
+		"userName": "",
+		"identityType": 0,
+		"studentTeacherId": "",
+		"emergencyContact": "",
+		"emergencyContactPhone": "",
+		"medicalHistory": "",
+		"allergyHistory": "",
+		"createTime": "",
+		"updateTime": ""
+	}
+}
+```
+
+
+## 更新患者档案('ALT_PATIENT')
+
+
+**接口地址**:`/patient-profiles/{userId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新患者档案信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "identityType": 0,
+  "studentTeacherId": "",
+  "emergencyContact": "",
+  "emergencyContactPhone": "",
+  "medicalHistory": "",
+  "allergyHistory": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|userId||path|true|integer(int64)||
+|patientProfileUpdateDTO|PatientProfileUpdateDTO|body|true|PatientProfileUpdateDTO|PatientProfileUpdateDTO|
+|&emsp;&emsp;identityType|||false|integer(int32)||
+|&emsp;&emsp;studentTeacherId|||false|string||
+|&emsp;&emsp;emergencyContact|||false|string||
+|&emsp;&emsp;emergencyContactPhone|||false|string||
+|&emsp;&emsp;medicalHistory|||false|string||
+|&emsp;&emsp;allergyHistory|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 批量删除患者档案('DEL_PATIENT')
+
+
+**接口地址**:`/patient-profiles/batch`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>批量删除患者档案</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+[]
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|integers|integer|body|true|array||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 获取所有患者档案
+
+
+**接口地址**:`/patient-profiles/getAllPatient`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取所有患者的详细档案信息（已废弃）</p>
+
+
+
+**请求参数**:
+
+
+暂无
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultListPatientProfileDetailDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||array|PatientProfileDetailDTO|
+|&emsp;&emsp;patientProfileId||integer(int64)||
+|&emsp;&emsp;userId||integer(int64)||
+|&emsp;&emsp;userName||string||
+|&emsp;&emsp;identityType||integer(int32)||
+|&emsp;&emsp;studentTeacherId||string||
+|&emsp;&emsp;emergencyContact||string||
+|&emsp;&emsp;emergencyContactPhone||string||
+|&emsp;&emsp;medicalHistory||string||
+|&emsp;&emsp;allergyHistory||string||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": [
+		{
+			"patientProfileId": 0,
+			"userId": 0,
+			"userName": "",
+			"identityType": 0,
+			"studentTeacherId": "",
+			"emergencyContact": "",
+			"emergencyContactPhone": "",
+			"medicalHistory": "",
+			"allergyHistory": "",
+			"createTime": "",
+			"updateTime": ""
+		}
+	]
+}
+```
+
+
+## 患者更新自己的档案
+
+
+**接口地址**:`/patient-profiles/self`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>患者更新自己的档案信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "emergencyContact": "",
+  "emergencyContactPhone": "",
+  "medicalHistory": "",
+  "allergyHistory": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|patientProfileUpdateSelfDTO|PatientProfileUpdateSelfDTO|body|true|PatientProfileUpdateSelfDTO|PatientProfileUpdateSelfDTO|
+|&emsp;&emsp;emergencyContact|||false|string||
+|&emsp;&emsp;emergencyContactPhone|||false|string||
+|&emsp;&emsp;medicalHistory|||false|string||
+|&emsp;&emsp;allergyHistory|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
 # 角色接口
 
 
@@ -674,7 +1273,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -809,7 +1408,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -862,7 +1461,6 @@
 |&emsp;&emsp;pageSize|||false|integer(int32)||
 |&emsp;&emsp;name|||true|string||
 |&emsp;&emsp;parentId|||true|integer(int64)||
-|&emsp;&emsp;isDeleted|||false|integer(int32)||
 
 
 **响应状态**:
@@ -913,7 +1511,7 @@
 ```
 
 
-## 创建科室('DEPT_MANAGE')
+## 创建科室('ADD_DEPART')
 
 
 **接口地址**:`/departments`
@@ -1066,7 +1664,7 @@
 ```
 
 
-## 更新科室信息('DEPT_MANAGE')
+## 更新科室信息('ALT_DEPART')
 
 
 **接口地址**:`/departments/{departmentId}`
@@ -1139,7 +1737,7 @@
 ```
 
 
-## 删除科室('DEPT_MANAGE')
+## 删除科室('DEL_DEPART')
 
 
 **接口地址**:`/departments/{departmentId}`
@@ -1194,7 +1792,91 @@
 ```
 
 
-## 批量删除科室('DEPT_MANAGE')
+## 查询科室下医生列表
+
+
+**接口地址**:`/departments/{departmentId}/doctors`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>查询指定科室的所有医生</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|departmentId||path|true|integer(int64)||
+|requestDTO||query|true|DoctorProfileGetRequestDTO|DoctorProfileGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;departmentId|||false|integer(int64)||
+|&emsp;&emsp;title|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTODoctorProfileListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTODoctorProfileListDTO|PageDTODoctorProfileListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|DoctorProfileListDTO|
+|&emsp;&emsp;&emsp;&emsp;doctorProfileId||integer||
+|&emsp;&emsp;&emsp;&emsp;userId||integer||
+|&emsp;&emsp;&emsp;&emsp;userName||string||
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;&emsp;&emsp;title||string||
+|&emsp;&emsp;&emsp;&emsp;specialty||string||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"doctorProfileId": 0,
+				"userId": 0,
+				"userName": "",
+				"departmentId": 0,
+				"departmentName": "",
+				"title": "",
+				"specialty": "",
+				"createTime": ""
+			}
+		]
+	}
+}
+```
+
+
+## 批量删除科室('DEL_DEPART')
 
 
 **接口地址**:`/departments/batch`
@@ -1227,6 +1909,542 @@
 | 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
 | -------- | -------- | ----- | -------- | -------- | ------ |
 |integers|integer|body|true|array||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+# 排班接口
+
+
+## 获取所有排班
+
+
+**接口地址**:`/schedules`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取所有排班</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|ScheduleGetRequestDTO|ScheduleGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;doctorUserId|||false|integer(int64)||
+|&emsp;&emsp;scheduleStartDate|||false|string(date)||
+|&emsp;&emsp;scheduleEndDate|||false|string(date)||
+|&emsp;&emsp;slotType|||false|integer(int32)||
+|&emsp;&emsp;slotPeriod|||false|integer(int32)||
+|&emsp;&emsp;status|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTOScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTOScheduleListDTO|PageDTOScheduleListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|ScheduleListDTO|
+|&emsp;&emsp;&emsp;&emsp;scheduleId||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;scheduleDate||string||
+|&emsp;&emsp;&emsp;&emsp;slotType||integer||
+|&emsp;&emsp;&emsp;&emsp;slotPeriod||integer||
+|&emsp;&emsp;&emsp;&emsp;totalSlots||integer||
+|&emsp;&emsp;&emsp;&emsp;availableSlots||integer||
+|&emsp;&emsp;&emsp;&emsp;fee||number||
+|&emsp;&emsp;&emsp;&emsp;status||integer||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"scheduleId": 0,
+				"doctorUserId": 0,
+				"scheduleDate": "",
+				"slotType": 0,
+				"slotPeriod": 0,
+				"totalSlots": 0,
+				"availableSlots": 0,
+				"fee": 0,
+				"status": 0,
+				"createTime": ""
+			}
+		]
+	}
+}
+```
+
+
+## 创建排班('ADD_SCHEDULE')
+
+
+**接口地址**:`/schedules`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>创建排班</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "doctorUserId": 0,
+  "scheduleDate": "",
+  "slotType": 0,
+  "slotPeriod": 0,
+  "totalSlots": 0,
+  "fee": 0,
+  "status": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleCreateDTO|ScheduleCreateDTO|body|true|ScheduleCreateDTO|ScheduleCreateDTO|
+|&emsp;&emsp;doctorUserId|||true|integer(int64)||
+|&emsp;&emsp;scheduleDate|||true|string(date)||
+|&emsp;&emsp;slotType|||true|integer(int32)||
+|&emsp;&emsp;slotPeriod|||true|integer(int32)||
+|&emsp;&emsp;totalSlots|||true|integer(int32)||
+|&emsp;&emsp;fee|||true|number||
+|&emsp;&emsp;status|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||ScheduleListDTO|ScheduleListDTO|
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;doctorUserId||integer(int64)||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;totalSlots||integer(int32)||
+|&emsp;&emsp;availableSlots||integer(int32)||
+|&emsp;&emsp;fee||number||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;createTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"scheduleId": 0,
+		"doctorUserId": 0,
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"totalSlots": 0,
+		"availableSlots": 0,
+		"fee": 0,
+		"status": 0,
+		"createTime": ""
+	}
+}
+```
+
+
+## 获取排班详情
+
+
+**接口地址**:`/schedules/{scheduleId}`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取排班详情</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||ScheduleListDTO|ScheduleListDTO|
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;doctorUserId||integer(int64)||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;totalSlots||integer(int32)||
+|&emsp;&emsp;availableSlots||integer(int32)||
+|&emsp;&emsp;fee||number||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;createTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"scheduleId": 0,
+		"doctorUserId": 0,
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"totalSlots": 0,
+		"availableSlots": 0,
+		"fee": 0,
+		"status": 0,
+		"createTime": ""
+	}
+}
+```
+
+
+## 更新排班信息('ALT_SCHEDULE')
+
+
+**接口地址**:`/schedules/{scheduleId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新排班信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "doctorUserId": 0,
+  "scheduleDate": "",
+  "slotType": 0,
+  "slotPeriod": 0,
+  "totalSlots": 0,
+  "availableSlots": 0,
+  "fee": 0,
+  "status": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleId||path|true|integer(int64)||
+|scheduleUpdateDTO|ScheduleUpdateDTO|body|true|ScheduleUpdateDTO|ScheduleUpdateDTO|
+|&emsp;&emsp;doctorUserId|||false|integer(int64)||
+|&emsp;&emsp;scheduleDate|||false|string(date)||
+|&emsp;&emsp;slotType|||false|integer(int32)||
+|&emsp;&emsp;slotPeriod|||false|integer(int32)||
+|&emsp;&emsp;totalSlots|||false|integer(int32)||
+|&emsp;&emsp;availableSlots|||false|integer(int32)||
+|&emsp;&emsp;fee|||false|number||
+|&emsp;&emsp;status|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 删除排班('DEL_SCHEDULE')
+
+
+**接口地址**:`/schedules/{scheduleId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除排班（逻辑删除）</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 批量删除排班('DEL_SCHEDULE')
+
+
+**接口地址**:`/schedules/batch`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>批量删除排班</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+[]
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|integers|integer|body|true|array||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 复制7天前的排班('ADD_SCHEDULE')
+
+
+**接口地址**:`/schedules/copy`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>复制7天前的排班</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "doctorUserId": 0,
+  "targetDate": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleCopyDTO|ScheduleCopyDTO|body|true|ScheduleCopyDTO|ScheduleCopyDTO|
+|&emsp;&emsp;doctorUserId|||true|integer(int64)||
+|&emsp;&emsp;targetDate|||true|string(date)||
 
 
 **响应状态**:
@@ -1376,7 +2594,6 @@
 |&emsp;&emsp;pageSize|||false|integer(int32)||
 |&emsp;&emsp;departmentId|||false|integer(int64)||
 |&emsp;&emsp;title|||false|string||
-|&emsp;&emsp;isDeleted|||false|integer(int32)||
 
 
 **响应状态**:
@@ -1470,11 +2687,11 @@
 | 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
 | -------- | -------- | ----- | -------- | -------- | ------ |
 |doctorProfileCreateDTO|DoctorProfileCreateDTO|body|true|DoctorProfileCreateDTO|DoctorProfileCreateDTO|
-|&emsp;&emsp;userId|||false|integer(int64)||
-|&emsp;&emsp;departmentId|||false|integer(int64)||
-|&emsp;&emsp;title|||false|string||
-|&emsp;&emsp;specialty|||false|string||
-|&emsp;&emsp;bio|||false|string||
+|&emsp;&emsp;userId|||true|integer(int64)||
+|&emsp;&emsp;departmentId|||true|integer(int64)||
+|&emsp;&emsp;title|||true|string||
+|&emsp;&emsp;specialty|||true|string||
+|&emsp;&emsp;bio|||true|string||
 
 
 **响应状态**:
@@ -1804,7 +3021,7 @@
 **响应数据类型**:`*/*`
 
 
-**接口描述**:<p>获取所有医生的详细档案信息（已废弃）</p>
+**接口描述**:<p>获取所有医生档案信息（已废弃）</p>
 
 
 
@@ -2348,6 +3565,61 @@
 ```
 
 
+## 删除用户('DEL_USER')
+
+
+**接口地址**:`/users/{userId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除用户（逻辑删除）</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|userId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
 ## 设置用户角色('ALT_MB')
 
 
@@ -2385,6 +3657,69 @@
 |userId||path|true|integer(int64)||
 |roleUserUpdateDTO|RoleUserUpdateDTO|body|true|RoleUserUpdateDTO|RoleUserUpdateDTO|
 |&emsp;&emsp;roleId|||true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 批量删除用户('DEL_USER')
+
+
+**接口地址**:`/users/batch`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>批量删除用户（逻辑删除）</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+[]
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|integers|integer|body|true|array||
 
 
 **响应状态**:

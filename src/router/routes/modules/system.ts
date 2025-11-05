@@ -73,6 +73,17 @@ const SYSTEM: AppRouteRecordRaw = {
         permission: 'CHECK_DOCTOR',
       },
     },
+    // 医生排班管理页面
+    {
+      path: 'schedule-page',
+      name: 'SchedulePage',
+      component: () => import('@/views/system/schedule-page/index.vue'),
+      meta: {
+        locale: 'menu.system.schedulePage',
+        requiresPerm: true,
+        permission: 'CHECK_SCHEDULE',
+      },
+    },
   ],
 };
 

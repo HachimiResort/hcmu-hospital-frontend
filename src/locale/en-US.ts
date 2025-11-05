@@ -42,6 +42,7 @@ export default {
   'menu.system.personnelPage': 'Personnel Management',
   'menu.system.logPage': 'System Logs',
   'menu.system.doctorProfilePage': 'Doctor Profile Management',
+  'menu.system.schedulePage': 'Doctor Schedule Management',
   'menu.display': 'Project display',
   'menu.about': 'About',
 

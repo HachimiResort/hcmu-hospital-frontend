@@ -42,6 +42,7 @@ export default {
   'menu.system.personnelPage': '人事管理',
   'menu.system.logPage': '系统日志',
   'menu.system.doctorProfilePage': '医生档案管理',
+  'menu.system.schedulePage': '医生排班管理',
   'menu.display': '项目展示',
   'menu.about': '关于',
 
