@@ -128,3 +128,19 @@ export function applyUpdateEmail(params: ApplyUpdateEmailParams) {
 export function verifyEmailCode(params: VerifyEmailCodeParams) {
   return axios.post(`${base}/email/verify`, params);
 }
+
+/**
+ * 删除用户
+ * @param {number} id - 要删除的用户的ID
+ */
+export function deleteUser(id: number) {
+  return axios.delete<string>(`${base}/${id}`);
+}
+
+/**
+ * 批量删除用户
+ * @param {number[]} ids - 用户ID的数组
+ */
+export function batchDeleteUsers(ids: number[]) {
+  return axios.delete<string>(`${base}/batch`, { data: ids });
+}
