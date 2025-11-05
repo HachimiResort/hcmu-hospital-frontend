@@ -73,6 +73,17 @@ const SYSTEM: AppRouteRecordRaw = {
         permission: 'CHECK_DOCTOR',
       },
     },
+    // 患者档案管理页面
+    {
+      path: 'patient-profile-page',
+      name: 'PatientProfilePage',
+      component: () => import('@/views/system/patient-profile-page/index.vue'),
+      meta: {
+        locale: 'menu.system.patientProfilePage',
+        requiresPerm: true,
+        permission: 'CHECK_PATIENT',
+      },
+    },
   ],
 };
 
