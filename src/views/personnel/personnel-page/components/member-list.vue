@@ -61,14 +61,25 @@
 
       <a-divider style="margin-top: 0"></a-divider>
 
-      <a-row style="justify-content: flex-end; margin-bottom: 16px">
+      <a-row style="margin-bottom: 16px">
+        <a-col :span="12">
+          <a-space>
+            <a-button
+              v-permission="{ permissionsTarget: ['DEL_MB'] }"
+              status="danger"
+              :disabled="selectedKeys.length === 0"
+              @click="handleBatchDelete"
+            >
+              <template #icon>
+                <icon-delete />
+              </template>
+              批量删除
+            </a-button>
+          </a-space>
+        </a-col>
         <a-col
           :span="12"
-          style="
-            display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
-          "
+          style="display: flex; align-items: center; justify-content: flex-end"
         >
           <a-tooltip :content="$t('listBoard.refresh')">
             <div class="action-icon" @click="search"
@@ -96,13 +107,15 @@
       </a-row>
 
       <a-table
-        row-key="id"
+        v-model:selected-keys="selectedKeys"
+        row-key="userId"
         :loading="loading"
         :pagination="pagination"
         :columns="cloneColumns"
         :data="renderData"
         :bordered="false"
         :size="size"
+        :row-selection="rowSelection"
         @page-change="onPageChange"
       >
         <template #index="{ rowIndex }">
@@ -125,6 +138,15 @@
             >
               {{ $t('personnelPage.columns.operations.editRole') }}
             </a-button>
+            <a-button
+              v-permission="{ permissionsTarget: ['DEL_MB'] }"
+              :size="size"
+              type="text"
+              status="danger"
+              @click="handleDelete(record)"
+            >
+              删除
+            </a-button>
           </a-space>
         </template>
       </a-table>
@@ -144,9 +166,14 @@
   import { useI18n } from 'vue-i18n';
   import { UserGetRequestDTO } from '@/api/branch';
   import useLoading from '@/hooks/loading';
-  import { Message, TableColumnData } from '@arco-design/web-vue';
+  import { Message, Modal, TableColumnData } from '@arco-design/web-vue';
   import cloneDeep from 'lodash/cloneDeep';
-  import { SysMemberRecord, getAllUsers } from '@/api/user';
+  import {
+    SysMemberRecord,
+    getAllUsers,
+    deleteUser,
+    batchDeleteUsers,
+  } from '@/api/user';
   import { useRouter } from 'vue-router';
   import { redirectToPersonal } from '@/utils/switch-page';
   import RoleChangeModal from './role-change-modal.vue';
@@ -218,6 +245,7 @@
 
   const renderData = ref<SysMemberRecord[]>([]);
   const { loading, setLoading } = useLoading(true);
+  const selectedKeys = ref<(string | number)[]>([]);
 
   const basePagination: Pagination = {
     current: 1,
@@ -298,6 +326,67 @@
     e: Event
   ) => {
     size.value = val as SizeProps;
+  };
+
+  // 行选择配置
+  const rowSelection = computed(() => ({
+    type: 'checkbox' as const,
+    showCheckedAll: true,
+    onlyCurrent: false,
+    selectedRowKeys: selectedKeys.value,
+    onSelect: (rowKeys: number[]) => {
+      selectedKeys.value = rowKeys;
+    },
+    onSelectAll: (checked: boolean) => {
+      if (checked) {
+        selectedKeys.value = renderData.value.map((item) => item.userId);
+      } else {
+        selectedKeys.value = [];
+      }
+    },
+  }));
+
+  // 批量删除
+  const handleBatchDelete = () => {
+    if (selectedKeys.value.length === 0) {
+      Message.warning('请先选择要删除的用户');
+      return;
+    }
+    Modal.confirm({
+      title: '确认批量删除',
+      content: `将删除选中的 ${selectedKeys.value.length} 个用户，是否继续？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          await batchDeleteUsers(selectedKeys.value as number[]);
+          Message.success('批量删除成功');
+          selectedKeys.value = [];
+          fetchData();
+        } catch (err) {
+          Message.error(String(err));
+        }
+      },
+    });
+  };
+
+  // 单个删除
+  const handleDelete = (record: SysMemberRecord) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: `将删除用户：${record.nickname || record.userName}，是否继续？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          await deleteUser(record.userId);
+          Message.success('删除成功');
+          fetchData();
+        } catch (err) {
+          Message.error(String(err));
+        }
+      },
+    });
   };
 
   watch(
