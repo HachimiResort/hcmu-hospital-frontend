@@ -43,6 +43,7 @@ export default {
   'menu.system.logPage': 'System Logs',
   'menu.system.doctorProfilePage': 'Doctor Profile Management',
   'menu.system.patientProfilePage': 'Patient Profile Management',
+  'menu.system.schedulePage': 'Doctor Schedule Management',
   'menu.display': 'Project display',
   'menu.about': 'About',
 

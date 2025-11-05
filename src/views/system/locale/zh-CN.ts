@@ -3,6 +3,7 @@ import localeDepartmentPage from '../department-page/locale/zh-CN';
 import localeImportPage from '../import-page/locale/zh-CN';
 import localeDoctorProfilePage from '../doctor-profile-page/locale/zh-CN';
 import localePatientProfilePage from '../patient-profile-page/locale/zh-CN';
+import localeSchedulePage from '../schedule-page/locale/zh-CN';
 
 export default {
   ...localeRolePage,
@@ -10,4 +11,5 @@ export default {
   ...localeImportPage,
   ...localeDoctorProfilePage,
   ...localePatientProfilePage,
+  ...localeSchedulePage,
 };
