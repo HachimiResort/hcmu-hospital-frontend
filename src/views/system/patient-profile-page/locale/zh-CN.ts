@@ -28,6 +28,11 @@ export default {
   'patientProfilePage.modal.form.medicalHistory': '病史',
   'patientProfilePage.modal.form.allergyHistory': '过敏史',
 
+  'patientProfilePage.identity.all': '全部',
+  'patientProfilePage.identity.other': '其他',
+  'patientProfilePage.identity.student': '学生',
+  'patientProfilePage.identity.teacher': '教职工',
+
   // 消息提示
   'patientProfilePage.message.fetchError': '获取患者档案列表失败',
   'patientProfilePage.message.fetchDetailError': '获取患者档案详情失败',

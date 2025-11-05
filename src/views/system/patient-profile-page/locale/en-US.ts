@@ -31,6 +31,11 @@ export default {
   'patientProfilePage.modal.form.medicalHistory': 'Medical History',
   'patientProfilePage.modal.form.allergyHistory': 'Allergy History',
 
+  'patientProfilePage.identity.all': 'All',
+  'patientProfilePage.identity.other': 'Other',
+  'patientProfilePage.identity.student': 'Student',
+  'patientProfilePage.identity.teacher': 'Staff',
+
   // Messages
   'patientProfilePage.message.fetchError': 'Failed to fetch patient profiles',
   'patientProfilePage.message.fetchDetailError':

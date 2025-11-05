@@ -109,6 +109,9 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
+        <template #identityType="{ record }">
+          {{ getIdentityLabel(record.identityType) }}
+        </template>
         <template #operations="{ record }">
           <a-button
             v-permission="{ permissionsTarget: ['ALT_PATIENT'] }"
@@ -191,6 +194,15 @@
     { value: 3, label: t('patientProfilePage.identity.other') },
   ]);
 
+  // 将 identityType 的值映射为文本标签。1 -> student, 2 -> teacher, 其他 -> other
+  const getIdentityLabel = (val: number | string | undefined) => {
+    if (val === 1 || val === '1')
+      return t('patientProfilePage.identity.student');
+    if (val === 2 || val === '2')
+      return t('patientProfilePage.identity.teacher');
+    return t('patientProfilePage.identity.other');
+  };
+
   // 表格列定义
   const columns = computed<TableColumnData[]>(() => [
     {
@@ -204,6 +216,7 @@
     {
       title: t('patientProfilePage.columns.identityType'),
       dataIndex: 'identityType',
+      slotName: 'identityType',
     },
     {
       title: t('patientProfilePage.columns.studentTeacherId'),

@@ -102,9 +102,9 @@
   });
 
   const identityOptions = ref([
+    { value: 0, label: t('patientProfilePage.identity.other') },
     { value: 1, label: t('patientProfilePage.identity.student') },
     { value: 2, label: t('patientProfilePage.identity.teacher') },
-    { value: 3, label: t('patientProfilePage.identity.other') },
   ]);
 
   const rules = {};
