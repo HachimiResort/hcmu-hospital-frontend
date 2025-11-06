@@ -4,6 +4,7 @@ import localeImportPage from '../import-page/locale/en-US';
 import localeDoctorProfilePage from '../doctor-profile-page/locale/en-US';
 import localePatientProfilePage from '../patient-profile-page/locale/en-US';
 import localeSchedulePage from '../schedule-page/locale/en-US';
+import localeOperationRulePage from '../operation-rule-page/locale/en-US';
 
 export default {
   ...localeRolePage,
@@ -11,5 +12,6 @@ export default {
   ...localeImportPage,
   ...localeDoctorProfilePage,
   ...localePatientProfilePage,
+  ...localeOperationRulePage,
   ...localeSchedulePage,
 };

@@ -44,6 +44,7 @@ export default {
   'menu.system.doctorProfilePage': '医生档案管理',
   'menu.system.patientProfilePage': '患者档案管理',
   'menu.system.schedulePage': '医生排班管理',
+  'menu.system.operationRulePage': '运营规则配置',
   'menu.display': '项目展示',
   'menu.about': '关于',
 
