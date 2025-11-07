@@ -44,6 +44,7 @@ export default {
   'menu.system.doctorProfilePage': 'Doctor Profile Management',
   'menu.system.patientProfilePage': 'Patient Profile Management',
   'menu.system.schedulePage': 'Doctor Schedule Management',
+  'menu.system.operationRulePage': 'Operation Rule Settings',
   'menu.display': 'Project display',
   'menu.about': 'About',
 

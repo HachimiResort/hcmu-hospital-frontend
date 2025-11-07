@@ -73,6 +73,16 @@ const SYSTEM: AppRouteRecordRaw = {
         permission: 'CHECK_DOCTOR',
       },
     },
+    {
+      path: 'operation-rule-page',
+      name: 'OperationRulePage',
+      component: () => import('@/views/system/operation-rule-page/index.vue'),
+      meta: {
+        locale: 'menu.system.operationRulePage',
+        requiresPerm: true,
+        permission: 'CHECK_RULE',
+      },
+    },
     // 患者档案管理页面
     {
       path: 'patient-profile-page',
