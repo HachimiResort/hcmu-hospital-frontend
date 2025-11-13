@@ -23,16 +23,6 @@ const SYSTEM: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'department-page',
-      name: 'DepartmentPage',
-      component: () => import('@/views/system/department-page/index.vue'),
-      meta: {
-        locale: 'menu.system.departmentPage',
-        requiresPerm: true,
-        permission: 'DEPART_MG_PAGE',
-      },
-    },
-    {
       path: 'import-page',
       name: 'ImportPage',
       component: () => import('@/views/system/import-page/index.vue'),
@@ -60,49 +50,6 @@ const SYSTEM: AppRouteRecordRaw = {
         locale: 'menu.system.logPage',
         requiresPerm: true,
         permission: 'LOG_PAGE',
-      },
-    },
-    // 医生档案管理页面
-    {
-      path: 'doctor-profile-page',
-      name: 'DoctorProfilePage',
-      component: () => import('@/views/system/doctor-profile-page/index.vue'),
-      meta: {
-        locale: 'menu.system.doctorProfilePage',
-        requiresPerm: true,
-        permission: 'CHECK_DOCTOR',
-      },
-    },
-    {
-      path: 'operation-rule-page',
-      name: 'OperationRulePage',
-      component: () => import('@/views/system/operation-rule-page/index.vue'),
-      meta: {
-        locale: 'menu.system.operationRulePage',
-        requiresPerm: true,
-        permission: 'CHECK_RULE',
-      },
-    },
-    // 患者档案管理页面
-    {
-      path: 'patient-profile-page',
-      name: 'PatientProfilePage',
-      component: () => import('@/views/system/patient-profile-page/index.vue'),
-      meta: {
-        locale: 'menu.system.patientProfilePage',
-        requiresPerm: true,
-        permission: 'CHECK_PATIENT',
-      },
-    },
-    // 医生排班管理页面
-    {
-      path: 'schedule-page',
-      name: 'SchedulePage',
-      component: () => import('@/views/system/schedule-page/index.vue'),
-      meta: {
-        locale: 'menu.system.schedulePage',
-        requiresPerm: true,
-        permission: 'CHECK_SCHEDULE',
       },
     },
   ],

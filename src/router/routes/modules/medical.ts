@@ -1,0 +1,68 @@
+import { DEFAULT_LAYOUT } from '@/router/routes/base';
+import { AppRouteRecordRaw } from '../types';
+
+const MEDICAL: AppRouteRecordRaw = {
+  path: '/medical',
+  name: 'Medical',
+  component: DEFAULT_LAYOUT,
+  meta: {
+    locale: 'menu.medical',
+    requiresPerm: false,
+    icon: 'icon-common',
+    order: 7,
+  },
+  children: [
+    {
+      path: 'department-page',
+      name: 'MedicalDepartmentPage',
+      component: () => import('@/views/system/department-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.departmentPage',
+        requiresPerm: true,
+        permission: 'DEPART_MG_PAGE',
+      },
+    },
+    {
+      path: 'doctor-profile-page',
+      name: 'MedicalDoctorProfilePage',
+      component: () => import('@/views/system/doctor-profile-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.doctorProfilePage',
+        requiresPerm: true,
+        permission: 'CHECK_DOCTOR',
+      },
+    },
+    {
+      path: 'operation-rule-page',
+      name: 'MedicalOperationRulePage',
+      component: () => import('@/views/system/operation-rule-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.operationRulePage',
+        requiresPerm: true,
+        permission: 'CHECK_RULE',
+      },
+    },
+    {
+      path: 'patient-profile-page',
+      name: 'MedicalPatientProfilePage',
+      component: () => import('@/views/system/patient-profile-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.patientProfilePage',
+        requiresPerm: true,
+        permission: 'CHECK_PATIENT',
+      },
+    },
+    {
+      path: 'schedule-page',
+      name: 'MedicalSchedulePage',
+      component: () => import('@/views/system/schedule-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.schedulePage',
+        requiresPerm: true,
+        permission: 'CHECK_SCHEDULE',
+      },
+    },
+  ],
+};
+
+export default MEDICAL;
