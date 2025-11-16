@@ -853,6 +853,106 @@
 ```
 
 
+## 支付预约
+
+
+**接口地址**:`/appointments/{appointmentId}/pay`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>支付预约</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|appointmentId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultAppointmentListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||AppointmentListDTO|AppointmentListDTO|
+|&emsp;&emsp;appointmentId||integer(int64)||
+|&emsp;&emsp;appointmentNo||string||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;visitNo||integer(int32)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;originalFee||number||
+|&emsp;&emsp;actualFee||number||
+|&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;departmentName||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"appointmentId": 0,
+		"appointmentNo": "",
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"visitNo": 0,
+		"status": 0,
+		"originalFee": 0,
+		"actualFee": 0,
+		"paymentTime": "",
+		"cancellationTime": "",
+		"cancellationReason": "",
+		"createTime": "",
+		"updateTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"departmentName": ""
+	}
+}
+```
+
+
 # 患者档案接口
 
 
@@ -1899,7 +1999,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -2034,7 +2134,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -3286,6 +3386,64 @@
 			}
 		]
 	}
+}
+```
+
+
+# 通用功能相关接口
+
+
+## 文件上传
+
+
+**接口地址**:`/common/upload`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`multipart/form-data`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>文件上传</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|file||query|true|file||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
 }
 ```
 

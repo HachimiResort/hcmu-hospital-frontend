@@ -99,12 +99,16 @@
                     allow-clear
                   >
                     <a-option
-                      :value="0"
-                      :label="$t('schedulePage.status.inactive')"
+                      :value="1"
+                      :label="$t('schedulePage.status.open')"
                     />
                     <a-option
-                      :value="1"
-                      :label="$t('schedulePage.status.active')"
+                      :value="2"
+                      :label="$t('schedulePage.status.full')"
+                    />
+                    <a-option
+                      :value="3"
+                      :label="$t('schedulePage.status.closed')"
                     />
                   </a-select>
                 </a-form-item>
@@ -239,11 +243,21 @@
           </a-tag>
         </template>
         <template #status="{ record }">
-          <a-tag :color="record.status === 1 ? 'green' : 'red'">
+          <a-tag
+            :color="
+              record.status === 1
+                ? 'green'
+                : record.status === 2
+                ? 'orange'
+                : 'red'
+            "
+          >
             {{
               record.status === 1
-                ? $t('schedulePage.status.active')
-                : $t('schedulePage.status.inactive')
+                ? $t('schedulePage.status.open')
+                : record.status === 2
+                ? $t('schedulePage.status.full')
+                : $t('schedulePage.status.closed')
             }}
           </a-tag>
         </template>
