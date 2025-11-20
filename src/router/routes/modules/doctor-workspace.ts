@@ -26,6 +26,18 @@ const DOCTOR_WORKSPACE: AppRouteRecordRaw = {
         activeMenu: 'DoctorWorkspace',
       },
     },
+    {
+      path: 'schedule-patients/:userId/:scheduleId',
+      name: 'SchedulePatients',
+      component: () => import('@/views/doctor-workspace/schedule-patients.vue'),
+      meta: {
+        locale: 'menu.schedulePatients',
+        requiresPerm: true,
+        permission: 'DOCTOR_WORK_PAGE',
+        hideInMenu: true,
+        activeMenu: 'DoctorWorkspace',
+      },
+    },
   ],
 };
 

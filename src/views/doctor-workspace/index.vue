@@ -8,6 +8,14 @@
           :bordered="false"
           class="calendar-card"
         >
+          <template #extra>
+            <a-button type="primary" @click="handleApplyScheduleChange">
+              <template #icon>
+                <icon-edit />
+              </template>
+              {{ $t('workspace.applyScheduleChange') }}
+            </a-button>
+          </template>
           <a-spin :loading="scheduleLoading">
             <!-- 自定义日历头部 -->
             <div class="calendar-header-custom">
@@ -59,6 +67,7 @@
                       :key="schedule.scheduleId"
                       class="schedule-item"
                       :class="`schedule-type-${schedule.slotType}`"
+                      @click.stop="handleScheduleClick(schedule)"
                     >
                       <div class="schedule-time">{{
                         getPeriodText(schedule.slotPeriod)
@@ -219,12 +228,14 @@
 <script lang="ts" setup>
   import { ref, onMounted, watch, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
   import axios from 'axios';
   import dayjs from 'dayjs';
 
   const { t } = useI18n();
+  const router = useRouter();
   const userStore = useUserStore();
 
   const profileLoading = ref(false);
@@ -365,22 +376,23 @@
       const start = startDate || dayjs().startOf('month').format('YYYY-MM-DD');
       const end = endDate || dayjs().endOf('month').format('YYYY-MM-DD');
 
-      // 使用排班接口 GET /schedules
-      // 此接口可能需要 CHECK_SCHEDULE 权限
-      const response = await axios.get('/schedules', {
-        params: {
-          doctorUserId: userStore.userId,
-          scheduleStartDate: start,
-          scheduleEndDate: end,
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
+      // 使用医生档案接口下的排班查询接口 GET /doctor-profiles/{userId}/schedules
+      const response = await axios.get(
+        `/doctor-profiles/${userStore.userId}/schedules`,
+        {
+          params: {
+            scheduleStartDate: start,
+            scheduleEndDate: end,
+            pageNum: 1,
+            pageSize: 100,
+          },
+        }
+      );
 
       // eslint-disable-next-line no-console
       console.log('排班接口返回:', response.data);
 
-      // 后端直接返回 { list: [...], total: ... },没有包装在 { code, msg, data } 中
+      // 后端实际返回 { list: [...], total: ... }，未包装在标准格式中
       if (response.data && response.data.list) {
         schedules.value = response.data.list || [];
         // eslint-disable-next-line no-console
@@ -393,12 +405,12 @@
       } else {
         // eslint-disable-next-line no-console
         console.error('获取排班失败,数据格式不正确:', response.data);
-        Message.error('获取排班信息失败,请检查权限配置');
+        Message.error('获取排班信息失败');
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('获取排班失败:', error);
-      Message.error('获取排班信息失败,请检查是否有CHECK_SCHEDULE权限');
+      Message.error('获取排班信息失败');
     } finally {
       scheduleLoading.value = false;
     }
@@ -429,32 +441,9 @@
     return slotPeriodMap[period] || `时段${period}`;
   };
 
-  // 获取时段颜色 (1-6上午用蓝色,7-12下午用橙色)
-  const getPeriodColor = (period: number) => {
-    return period <= 6 ? 'blue' : 'orange';
-  };
-
-  // 获取号类型颜色 (1=普通号蓝色, 2=专家号绿色, 3=特需号橙色)
-  const getSlotTypeColor = (slotType: number) => {
-    const colorMap: Record<number, string> = {
-      1: 'blue', // 普通号
-      2: 'green', // 专家号
-      3: 'orange', // 特需号
-    };
-    return colorMap[slotType] || 'blue';
-  };
-
   // 处理日期选择
   const handleDateSelect = (date: Date) => {
     selectedDate.value = dayjs(date).format('YYYY-MM-DD');
-  };
-
-  // 处理面板变化
-  const handlePanelChange = (date: Date) => {
-    const newDate = dayjs(date);
-    const start = newDate.startOf('month').format('YYYY-MM-DD');
-    const end = newDate.endOf('month').format('YYYY-MM-DD');
-    fetchSchedules(start, end);
   };
 
   // 上一个月
@@ -535,6 +524,22 @@
   // 取消编辑
   const handleCancelEdit = () => {
     editModalVisible.value = false;
+  };
+
+  // 点击排班时段
+  const handleScheduleClick = (schedule: Schedule) => {
+    router.push({
+      name: 'SchedulePatients',
+      params: {
+        userId: userStore.userId,
+        scheduleId: schedule.scheduleId,
+      },
+    });
+  };
+
+  // 申请修改排班(暂时只是个按钮，下次实现功能)
+  const handleApplyScheduleChange = () => {
+    Message.info(t('workspace.applyScheduleChangeComingSoon'));
   };
 
   // 初始化加载数据
@@ -758,6 +763,13 @@
                 font-size: 11px;
                 line-height: 1.3;
                 flex-shrink: 0;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                }
 
                 &.schedule-type-1 {
                   background-color: rgb(var(--blue-1));
