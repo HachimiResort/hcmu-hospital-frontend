@@ -36,46 +36,84 @@
             </div>
 
             <!-- 自定义月历布局 -->
-            <div class="custom-calendar">
-              <!-- 星期标题 -->
-              <div class="calendar-weekdays">
-                <div class="weekday">周日</div>
-                <div class="weekday">周一</div>
-                <div class="weekday">周二</div>
-                <div class="weekday">周三</div>
-                <div class="weekday">周四</div>
-                <div class="weekday">周五</div>
-                <div class="weekday">周六</div>
+            <div class="calendar-layout">
+              <div class="custom-calendar">
+                <!-- 星期标题 -->
+                <div class="calendar-weekdays">
+                  <div class="weekday">周日</div>
+                  <div class="weekday">周一</div>
+                  <div class="weekday">周二</div>
+                  <div class="weekday">周三</div>
+                  <div class="weekday">周四</div>
+                  <div class="weekday">周五</div>
+                  <div class="weekday">周六</div>
+                </div>
+
+                <!-- 日期网格 -->
+                <div class="calendar-days">
+                  <div
+                    v-for="day in calendarDays"
+                    :key="day.dateStr"
+                    class="calendar-day"
+                    :class="{
+                      'other-month': !day.isCurrentMonth,
+                      'today': day.isToday,
+                      'selected': day.dateStr === selectedDate,
+                    }"
+                    @click="handleDateSelect(day.date)"
+                  >
+                    <div class="day-number">{{ day.day }}</div>
+                    <div v-if="day.isCurrentMonth" class="day-schedules">
+                      <div
+                        v-for="schedule in getScheduleByDate(day.date)"
+                        :key="schedule.scheduleId"
+                        class="schedule-item"
+                        :class="`schedule-type-${schedule.slotType}`"
+                        @click.stop="handleScheduleClick(schedule)"
+                      >
+                        <div class="schedule-time">{{
+                          getPeriodText(schedule.slotPeriod)
+                        }}</div>
+                        <div class="schedule-count"
+                          >{{ schedule.availableSlots }}/{{
+                            schedule.totalSlots
+                          }}</div
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <!-- 日期网格 -->
-              <div class="calendar-days">
-                <div
-                  v-for="day in calendarDays"
-                  :key="day.dateStr"
-                  class="calendar-day"
-                  :class="{
-                    'other-month': !day.isCurrentMonth,
-                    'today': day.isToday,
-                  }"
-                  @click="handleDateSelect(day.date)"
-                >
-                  <div class="day-number">{{ day.day }}</div>
-                  <div v-if="day.isCurrentMonth" class="day-schedules">
-                    <div
-                      v-for="schedule in getScheduleByDate(day.date)"
-                      :key="schedule.scheduleId"
-                      class="schedule-item"
-                      :class="`schedule-type-${schedule.slotType}`"
-                      @click.stop="handleScheduleClick(schedule)"
-                    >
-                      <div class="schedule-time">{{
-                        getPeriodText(schedule.slotPeriod)
-                      }}</div>
-                      <div class="schedule-count"
+              <div class="schedule-side-panel">
+                <div class="side-header">
+                  <div class="side-date">
+                    {{ dayjs(selectedDate).format('YYYY年MM月DD日') }}
+                  </div>
+                  <div class="side-count">
+                    {{ selectedDateSchedules.length }} 条排班
+                  </div>
+                </div>
+                <a-empty
+                  v-if="selectedDateSchedules.length === 0"
+                  :description="$t('workspace.noSchedule') || '暂无排班'"
+                />
+                <div v-else class="side-list">
+                  <div
+                    v-for="schedule in selectedDateSchedules"
+                    :key="schedule.scheduleId"
+                    class="side-item"
+                    :class="`schedule-type-${schedule.slotType}`"
+                    @click="handleScheduleClick(schedule)"
+                  >
+                    <div class="side-time">
+                      {{ getPeriodText(schedule.slotPeriod) }}
+                    </div>
+                    <div class="side-meta">
+                      <span class="side-availability"
                         >{{ schedule.availableSlots }}/{{
                           schedule.totalSlots
-                        }}</div
+                        }}</span
                       >
                     </div>
                   </div>
@@ -231,7 +269,13 @@
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
-  import axios from 'axios';
+  import {
+    DoctorProfileDetailDTO,
+    DoctorScheduleDTO,
+    getDoctorProfileByUserId,
+    getDoctorSchedules,
+    updateDoctorProfileSelf,
+  } from '@/api/doctor-profile';
   import dayjs from 'dayjs';
 
   const { t } = useI18n();
@@ -254,7 +298,6 @@
   const calendarDays = computed(() => {
     const currentMonth = dayjs(selectedDate.value);
     const firstDay = currentMonth.startOf('month');
-    const lastDay = currentMonth.endOf('month');
 
     // 获取第一天是星期几 (0=周日)
     const firstDayOfWeek = firstDay.day();
@@ -283,30 +326,9 @@
     return days;
   });
 
-  interface DoctorProfile {
-    doctorProfileId?: number;
-    userId?: number;
-    userName?: string;
-    name?: string;
-    departmentId?: number;
-    departmentName?: string;
-    title?: string;
-    specialty?: string;
-    bio?: string;
-  }
-
-  interface Schedule {
-    scheduleId: number;
-    scheduleDate: string;
-    slotPeriod: number;
-    totalSlots: number;
-    availableSlots: number;
-    status: number;
-  }
-
-  const doctorProfile = ref<DoctorProfile>({});
-  const schedules = ref<Schedule[]>([]);
-  const editForm = ref<DoctorProfile>({});
+  const doctorProfile = ref<Partial<DoctorProfileDetailDTO>>({});
+  const schedules = ref<DoctorScheduleDTO[]>([]);
+  const editForm = ref<Partial<DoctorProfileDetailDTO>>({});
 
   // 强制保持月视图
   watch(panelMode, (newMode) => {
@@ -322,42 +344,18 @@
       // eslint-disable-next-line no-console
       console.log('开始获取医生档案, userId:', userStore.userId);
 
-      // 使用详情接口 GET /doctor-profiles/{userId}
-      // 此接口需要 CHECK_DOCTOR 权限
-      const response = await axios.get(`/doctor-profiles/${userStore.userId}`);
+      const { data } = await getDoctorProfileByUserId(userStore.userId);
 
       // eslint-disable-next-line no-console
-      console.log('医生档案接口返回:', response.data);
+      console.log('医生档案接口返回:', data);
 
-      // 后端直接返回数据对象,没有包装在 { code, msg, data } 中
-      if (response.data && response.data.doctorProfileId) {
-        const {
-          doctorProfileId,
-          userId,
-          userName,
-          name,
-          departmentId,
-          departmentName,
-          title,
-          specialty,
-          bio,
-        } = response.data;
-        doctorProfile.value = {
-          doctorProfileId,
-          userId,
-          userName,
-          name,
-          departmentId,
-          departmentName,
-          title,
-          specialty,
-          bio,
-        };
+      if (data && (data as any).doctorProfileId) {
+        doctorProfile.value = data;
         // eslint-disable-next-line no-console
         console.log('医生档案设置成功:', doctorProfile.value);
       } else {
         // eslint-disable-next-line no-console
-        console.error('获取医生档案失败,数据格式不正确:', response.data);
+        console.error('获取医生档案失败,数据格式不正确:', data);
         Message.error('获取医生档案失败,请检查权限配置');
       }
     } catch (error) {
@@ -376,37 +374,25 @@
       const start = startDate || dayjs().startOf('month').format('YYYY-MM-DD');
       const end = endDate || dayjs().endOf('month').format('YYYY-MM-DD');
 
-      // 使用医生档案接口下的排班查询接口 GET /doctor-profiles/{userId}/schedules
-      const response = await axios.get(
-        `/doctor-profiles/${userStore.userId}/schedules`,
-        {
-          params: {
-            scheduleStartDate: start,
-            scheduleEndDate: end,
-            pageNum: 1,
-            pageSize: 100,
-          },
-        }
-      );
+      const { data } = await getDoctorSchedules(userStore.userId, {
+        scheduleStartDate: start,
+        scheduleEndDate: end,
+        pageNum: 1,
+        pageSize: 100,
+      });
 
       // eslint-disable-next-line no-console
-      console.log('排班接口返回:', response.data);
+      console.log('排班接口返回:', data);
 
-      // 后端实际返回 { list: [...], total: ... }，未包装在标准格式中
-      if (response.data && response.data.list) {
-        schedules.value = response.data.list || [];
-        // eslint-disable-next-line no-console
-        console.log('排班数据设置成功,共', schedules.value.length, '条记录');
-        // eslint-disable-next-line no-console
-        console.log(
-          '排班日期列表:',
-          schedules.value.map((s) => s.scheduleDate)
-        );
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('获取排班失败,数据格式不正确:', response.data);
-        Message.error('获取排班信息失败');
-      }
+      const list = (data && (data as any).list) || [];
+      schedules.value = list;
+      // eslint-disable-next-line no-console
+      console.log('排班数据设置成功,共', schedules.value.length, '条记录');
+      // eslint-disable-next-line no-console
+      console.log(
+        '排班日期列表:',
+        schedules.value.map((s) => s.scheduleDate)
+      );
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('获取排班失败:', error);
@@ -421,6 +407,10 @@
     const dateStr = dayjs(date).format('YYYY-MM-DD');
     return schedules.value.filter((s) => s.scheduleDate === dateStr);
   };
+
+  const selectedDateSchedules = computed(() =>
+    schedules.value.filter((s) => s.scheduleDate === selectedDate.value)
+  );
 
   // 获取时段文本
   const getPeriodText = (period: number) => {
@@ -491,25 +481,14 @@
       // eslint-disable-next-line no-console
       console.log('准备保存档案, 数据:', updateData);
 
-      const response = await axios.put('/doctor-profiles/self', updateData);
+      await updateDoctorProfileSelf(updateData);
+      Message.success(t('workspace.saveSuccess'));
 
-      // eslint-disable-next-line no-console
-      console.log('保存档案接口返回(经过拦截器):', response);
+      // 直接更新本地数据，界面会立即更新
+      doctorProfile.value.specialty = editForm.value.specialty;
+      doctorProfile.value.bio = editForm.value.bio;
 
-      // axios拦截器已经处理了响应，response就是res (即原始的response.data)
-      // 拦截器在res.code === 200时返回res，所以这里response就是HttpResponse类型
-      const res = response as any;
-      if (res.code === 200 || res.code === 0) {
-        Message.success(t('workspace.saveSuccess'));
-
-        // 直接更新本地数据，界面会立即更新
-        doctorProfile.value.specialty = editForm.value.specialty;
-        doctorProfile.value.bio = editForm.value.bio;
-
-        editModalVisible.value = false;
-      } else {
-        Message.error(res.msg || t('workspace.saveError'));
-      }
+      editModalVisible.value = false;
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.error('保存医生档案失败:', error);
@@ -527,12 +506,12 @@
   };
 
   // 点击排班时段
-  const handleScheduleClick = (schedule: Schedule) => {
+  const handleScheduleClick = (schedule: DoctorScheduleDTO) => {
     router.push({
       name: 'SchedulePatients',
       params: {
-        userId: userStore.userId,
         scheduleId: schedule.scheduleId,
+        userId: userStore.userId,
       },
     });
   };
@@ -600,6 +579,14 @@
 
     // 排班日历样式
     .calendar-card {
+      .calendar-layout {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        overflow-x: auto;
+      }
+
       // 自定义日历头部
       .calendar-header-custom {
         display: flex;
@@ -648,13 +635,15 @@
       .custom-calendar {
         border: 1px solid var(--color-border-2);
         border-radius: 8px;
-        overflow: hidden;
-        width: 840px;
+        overflow: auto;
+        flex: 1 1 640px;
+        min-width: 640px;
+        max-width: 100%;
         height: 768px;
 
         .calendar-weekdays {
           display: grid;
-          grid-template-columns: repeat(7, 120px);
+          grid-template-columns: repeat(7, minmax(90px, 1fr));
           background-color: var(--color-fill-2);
           border-bottom: 1px solid var(--color-border-2);
           height: 48px;
@@ -670,12 +659,16 @@
             &:last-child {
               border-right: none;
             }
+
+            &.selected {
+              box-shadow: inset 0 0 0 2px rgb(var(--primary-6));
+            }
           }
         }
 
         .calendar-days {
           display: grid;
-          grid-template-columns: repeat(7, 120px);
+          grid-template-columns: repeat(7, minmax(90px, 1fr));
           grid-template-rows: repeat(6, 120px);
           background-color: var(--color-bg-2);
 
@@ -905,6 +898,90 @@
           }
         }
       }
+
+      .schedule-side-panel {
+        width: 320px;
+        min-height: 768px;
+        border: 1px solid var(--color-border-2);
+        border-radius: 8px;
+        padding: 16px;
+        background-color: var(--color-bg-2);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .side-header {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .side-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-1);
+          }
+
+          .side-count {
+            font-size: 13px;
+            color: var(--color-text-3);
+          }
+        }
+
+        .side-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .side-item {
+          padding: 12px;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 1px solid var(--color-border-2);
+          transition: box-shadow 0.2s, transform 0.2s;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+          }
+
+          .side-time {
+            font-weight: 700;
+            margin-bottom: 6px;
+          }
+
+          .side-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-3);
+            font-size: 13px;
+
+            .side-availability {
+              font-weight: 600;
+              color: var(--color-text-1);
+            }
+          }
+
+          &.schedule-type-1 {
+            background-color: rgb(var(--blue-1));
+            border-color: rgb(var(--blue-3));
+            color: rgb(var(--blue-7));
+          }
+
+          &.schedule-type-2 {
+            background-color: rgb(var(--green-1));
+            border-color: rgb(var(--green-3));
+            color: rgb(var(--green-7));
+          }
+
+          &.schedule-type-3 {
+            background-color: rgb(var(--orange-1));
+            border-color: rgb(var(--orange-3));
+            color: rgb(var(--orange-7));
+          }
+        }
+      }
     }
 
     // 医生档案样式
@@ -1037,6 +1114,29 @@
 
       .profile-card {
         height: auto;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .calendar-card {
+        .custom-calendar {
+          min-width: 100%;
+          height: auto;
+        }
+
+        .calendar-weekdays {
+          grid-template-columns: repeat(7, minmax(64px, 1fr));
+        }
+
+        .calendar-days {
+          grid-template-columns: repeat(7, minmax(64px, 1fr));
+          grid-template-rows: repeat(6, minmax(80px, 1fr));
+        }
+
+        .schedule-side-panel {
+          width: 100%;
+          min-height: auto;
+        }
       }
     }
 

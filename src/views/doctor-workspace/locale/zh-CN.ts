@@ -46,4 +46,6 @@ export default {
   'schedulePatients.message.completeError': '操作失败',
   'schedulePatients.message.noShowSuccess': '已标记为爽约',
   'schedulePatients.message.noShowError': '操作失败',
+
+  'workspace.noSchedule': '您今天没有排班安排',
 };

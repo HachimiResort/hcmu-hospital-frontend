@@ -224,12 +224,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch, Ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { Message } from '@arco-design/web-vue';
-  import axios from 'axios';
-  import { getPatientProfileByUserId } from '@/api/patient-profile';
+  import { getSchedulePatients } from '@/api/doctor-profile';
+  import type { SchedulePatientDTO } from '@/api/doctor-profile';
+  import {
+    getPatientProfileByUserId,
+    type PatientProfileDetailDTO,
+  } from '@/api/patient-profile';
   import {
     getAppointments,
     callPatient,
@@ -237,27 +241,19 @@
     noShowAppointment,
   } from '@/api/appointment';
 
-  interface SchedulePatientDTO {
-    userId: number;
-    userName: string;
-    name: string;
-    sex: string;
-    email: string;
-    phone: string;
-  }
+  const APPOINTMENT_STATUS = {
+    Unpaid: 1,
+    Paid: 2,
+    Called: 3,
+    Completed: 4,
+    Cancelled: 5,
+    NoShow: 6,
+  } as const;
 
-  interface PatientProfileDetailDTO {
-    patientProfileId: number;
-    userId: number;
-    userName: string;
-    name: string;
-    identityType: number;
-    studentTeacherId?: string;
-    emergencyContact?: string;
-    emergencyContactPhone?: string;
-    medicalHistory?: string;
-    allergyHistory?: string;
-  }
+  type AppointmentStatus =
+    (typeof APPOINTMENT_STATUS)[keyof typeof APPOINTMENT_STATUS];
+
+  type PatientStatusMap = Map<number, AppointmentStatus>;
 
   const route = useRoute();
   const { t } = useI18n();
@@ -272,57 +268,105 @@
   const patientDetail = ref<PatientProfileDetailDTO>();
   const detailLoading = ref(false);
 
-  const appointmentStatus = ref<number>();
+  const appointmentStatus = ref<AppointmentStatus>();
   const currentAppointmentId = ref<number>();
 
-  // 存储所有患者的预约状态
-  const patientStatusMap = ref<Map<number, number>>(new Map());
+  const patientStatusMap = ref<PatientStatusMap>(new Map());
 
   const callLoading = ref(false);
   const completeLoading = ref(false);
   const noShowLoading = ref(false);
 
-  // 批量获取所有患者的预约状态
+  const IDENTITY_TYPE_MAP: Record<number, string> = {
+    1: t('schedulePatients.identityTypes.student'),
+    2: t('schedulePatients.identityTypes.teacher'),
+    3: t('schedulePatients.identityTypes.other'),
+  };
+
+  const STATUS_CLASS_MAP: Partial<Record<AppointmentStatus, string>> = {
+    [APPOINTMENT_STATUS.Unpaid]: 'unpaid',
+    [APPOINTMENT_STATUS.Paid]: 'paid',
+    [APPOINTMENT_STATUS.Called]: 'called',
+    [APPOINTMENT_STATUS.Completed]: 'completed',
+    [APPOINTMENT_STATUS.Cancelled]: 'cancelled',
+    [APPOINTMENT_STATUS.NoShow]: 'noshow',
+  };
+
+  const setPatientStatus = (
+    userIdValue: number,
+    status: AppointmentStatus | undefined
+  ) => {
+    if (!status) return;
+    patientStatusMap.value.set(userIdValue, status);
+    // trigger reactivity for Map
+    patientStatusMap.value = new Map(patientStatusMap.value);
+  };
+
+  const handleRequestError = (err: any, fallbackKey: string) => {
+    Message.error(err?.response?.data?.msg || t(fallbackKey));
+  };
+
+  const filterCancelledPatients = () => {
+    patients.value = patients.value.filter(
+      (patient) =>
+        patientStatusMap.value.get(patient.userId) !==
+        APPOINTMENT_STATUS.Cancelled
+    );
+  };
+
+  const getLatestAppointment = async (patientUserId: number) => {
+    const { data } = await getAppointments({
+      scheduleId: scheduleId.value,
+      patientUserId,
+      pageNum: 1,
+      pageSize: 1,
+    });
+
+    if (data.list && data.list.length > 0) {
+      return data.list[0];
+    }
+    return undefined;
+  };
+
+  const refreshAppointmentState = async (patientUserId: number) => {
+    const appointment = await getLatestAppointment(patientUserId);
+    if (!appointment) {
+      appointmentStatus.value = undefined;
+      currentAppointmentId.value = undefined;
+      return;
+    }
+
+    appointmentStatus.value = appointment.status as AppointmentStatus;
+    currentAppointmentId.value = appointment.appointmentId;
+    setPatientStatus(patientUserId, appointment.status as AppointmentStatus);
+  };
+
   const fetchAllPatientsStatus = async () => {
-    // 清空旧的状态
     patientStatusMap.value = new Map();
 
-    // 为每个患者创建获取状态的Promise
     const statusPromises = patients.value.map(async (patient) => {
       try {
-        const { data } = await getAppointments({
-          scheduleId: scheduleId.value,
-          patientUserId: patient.userId,
-          pageNum: 1,
-          pageSize: 1,
-        });
-
-        if (data.list && data.list.length > 0) {
-          return { userId: patient.userId, status: data.list[0].status };
-        }
-        return null;
+        const appointment = await getLatestAppointment(patient.userId);
+        return appointment
+          ? {
+              userId: patient.userId,
+              status: appointment.status as AppointmentStatus,
+            }
+          : null;
       } catch (err) {
         return null;
       }
     });
 
-    // 等待所有请求完成
-    const results = await Promise.all(statusPromises);
+    const results = await Promise.allSettled(statusPromises);
 
-    // 将结果存入Map，同时过滤掉已取消的患者
     results.forEach((result) => {
-      if (result) {
-        patientStatusMap.value.set(result.userId, result.status);
+      if (result.status === 'fulfilled' && result.value) {
+        setPatientStatus(result.value.userId, result.value.status);
       }
     });
 
-    // 过滤掉状态为5(已取消)的患者
-    patients.value = patients.value.filter(
-      (patient) => patientStatusMap.value.get(patient.userId) !== 5
-    );
-
-    // 强制触发响应式更新
-    patientStatusMap.value = new Map(patientStatusMap.value);
+    filterCancelledPatients();
   };
 
   // 获取时段患者列表
@@ -330,43 +374,17 @@
     try {
       patientsLoading.value = true;
 
-      const response = await axios.get(
-        `/doctor-profiles/${userId.value}/schedules/${scheduleId.value}/patients`
+      const { data } = await getSchedulePatients(
+        userId.value,
+        scheduleId.value
       );
-      patients.value = response.data || [];
+      patients.value = data || [];
 
-      // 获取所有患者的预约状态
       await fetchAllPatientsStatus();
     } catch (err: any) {
-      Message.error(
-        err.response?.data?.msg ||
-          t('schedulePatients.message.fetchPatientsError')
-      );
+      handleRequestError(err, 'schedulePatients.message.fetchPatientsError');
     } finally {
       patientsLoading.value = false;
-    }
-  };
-
-  // 获取预约状态
-  const fetchAppointmentStatus = async (patientUserId: number) => {
-    try {
-      const { data } = await getAppointments({
-        scheduleId: scheduleId.value,
-        patientUserId,
-        pageNum: 1,
-        pageSize: 1,
-      });
-
-      if (data.list && data.list.length > 0) {
-        const appointment = data.list[0];
-        appointmentStatus.value = appointment.status;
-        currentAppointmentId.value = appointment.appointmentId;
-      }
-    } catch (err: any) {
-      Message.error(
-        err.response?.data?.msg ||
-          t('schedulePatients.message.fetchAppointmentError')
-      );
     }
   };
 
@@ -377,17 +395,13 @@
       const { data } = await getPatientProfileByUserId(patientUserId);
       patientDetail.value = data;
 
-      // 获取该患者的预约信息
-      await fetchAppointmentStatus(patientUserId);
+      await refreshAppointmentState(patientUserId);
     } catch (err: any) {
       // 如果是权限错误，给出友好提示
       if (err.response?.status === 401 || err.response?.status === 403) {
         Message.error('您没有查看患者档案的权限，请联系管理员');
       } else {
-        Message.error(
-          err.response?.data?.msg ||
-            t('schedulePatients.message.fetchDetailError')
-        );
+        handleRequestError(err, 'schedulePatients.message.fetchDetailError');
       }
     } finally {
       detailLoading.value = false;
@@ -395,140 +409,71 @@
   };
 
   // 获取患者状态
-  const getPatientStatus = (patientUserId: number): number | undefined => {
+  const getPatientStatus = (
+    patientUserId: number
+  ): AppointmentStatus | undefined => {
     return patientStatusMap.value.get(patientUserId);
   };
 
   // 获取患者状态对应的样式类名
   const getStatusClass = (patientUserId: number): string => {
     const status = getPatientStatus(patientUserId);
-    switch (status) {
-      case 1:
-        return 'unpaid';
-      case 2:
-        return 'paid';
-      case 3:
-        return 'called';
-      case 4:
-        return 'completed';
-      case 5:
-        return 'cancelled'; // 已取消(不会显示在列表中)
-      case 6:
-        return 'noshow';
-      default:
-        return '';
-    }
+    return status ? STATUS_CLASS_MAP[status] || '' : '';
   };
 
   // 选择患者
   const handleSelectPatient = (patientUserId: number) => {
-    // 如果是未支付状态，不允许点击
-    if (getPatientStatus(patientUserId) === 1) {
+    if (getPatientStatus(patientUserId) === APPOINTMENT_STATUS.Unpaid) {
       return;
     }
     selectedPatientId.value = patientUserId;
     fetchPatientDetail(patientUserId);
   };
 
-  // 传呼
-  const handleCall = async () => {
-    if (!currentAppointmentId.value) return;
-
-    try {
-      callLoading.value = true;
-      await callPatient(currentAppointmentId.value);
-      Message.success(t('schedulePatients.message.callSuccess'));
-      // 刷新预约状态
-      if (selectedPatientId.value) {
-        await fetchAppointmentStatus(selectedPatientId.value);
-        // 更新状态映射表
-        if (appointmentStatus.value) {
-          patientStatusMap.value.set(
-            selectedPatientId.value,
-            appointmentStatus.value
-          );
-        }
-      }
-    } catch (err: any) {
-      Message.error(
-        err.response?.data?.msg || t('schedulePatients.message.callError')
-      );
-    } finally {
-      callLoading.value = false;
-    }
-  };
-
-  // 完成就诊
-  const handleComplete = async () => {
-    if (!currentAppointmentId.value) return;
-
-    try {
-      completeLoading.value = true;
-      await completeAppointment(currentAppointmentId.value);
-      Message.success(t('schedulePatients.message.completeSuccess'));
-      // 刷新预约状态
-      if (selectedPatientId.value) {
-        await fetchAppointmentStatus(selectedPatientId.value);
-        // 更新状态映射表
-        if (appointmentStatus.value) {
-          patientStatusMap.value.set(
-            selectedPatientId.value,
-            appointmentStatus.value
-          );
-        }
-      }
-    } catch (err: any) {
-      Message.error(
-        err.response?.data?.msg || t('schedulePatients.message.completeError')
-      );
-    } finally {
-      completeLoading.value = false;
-    }
-  };
-
-  // 爽约
-  const handleNoShow = async () => {
+  const runAppointmentAction = async (
+    action: (appointmentId: number) => Promise<unknown>,
+    loadingRef: Ref<boolean>,
+    successKey: string,
+    errorKey: string
+  ) => {
     if (!currentAppointmentId.value || !selectedPatientId.value) return;
-
     try {
-      noShowLoading.value = true;
-      await noShowAppointment(currentAppointmentId.value);
-      Message.success(t('schedulePatients.message.noShowSuccess'));
-
-      // 重新获取该患者的预约状态
-      const { data } = await getAppointments({
-        scheduleId: scheduleId.value,
-        patientUserId: selectedPatientId.value,
-        pageNum: 1,
-        pageSize: 1,
-      });
-
-      if (data.list && data.list.length > 0) {
-        const newStatus = data.list[0].status;
-        patientStatusMap.value.set(selectedPatientId.value, newStatus);
-        appointmentStatus.value = newStatus;
-
-        // 强制触发响应式更新
-        patientStatusMap.value = new Map(patientStatusMap.value);
-      }
+      loadingRef.value = true;
+      await action(currentAppointmentId.value);
+      Message.success(t(successKey));
+      await refreshAppointmentState(selectedPatientId.value);
     } catch (err: any) {
-      Message.error(
-        err.response?.data?.msg || t('schedulePatients.message.noShowError')
-      );
+      handleRequestError(err, errorKey);
     } finally {
-      noShowLoading.value = false;
+      loadingRef.value = false;
     }
   };
 
-  // 获取身份类型文本
-  const getIdentityTypeText = (type: number) => {
-    const typeMap: Record<number, string> = {
-      1: t('schedulePatients.identityTypes.student'),
-      2: t('schedulePatients.identityTypes.teacher'),
-      3: t('schedulePatients.identityTypes.other'),
-    };
-    return typeMap[type] || '-';
-  };
+  const handleCall = () =>
+    runAppointmentAction(
+      callPatient,
+      callLoading,
+      'schedulePatients.message.callSuccess',
+      'schedulePatients.message.callError'
+    );
+
+  const handleComplete = () =>
+    runAppointmentAction(
+      completeAppointment,
+      completeLoading,
+      'schedulePatients.message.completeSuccess',
+      'schedulePatients.message.completeError'
+    );
+
+  const handleNoShow = () =>
+    runAppointmentAction(
+      noShowAppointment,
+      noShowLoading,
+      'schedulePatients.message.noShowSuccess',
+      'schedulePatients.message.noShowError'
+    );
+
+  const getIdentityTypeText = (type: number) => IDENTITY_TYPE_MAP[type] || '-';
 
   onMounted(() => {
     fetchPatients();
@@ -540,10 +485,8 @@
     (newScheduleId) => {
       if (newScheduleId) {
         scheduleId.value = Number(newScheduleId);
-        // 清除选中状态
         selectedPatientId.value = undefined;
         patientDetail.value = undefined;
-        // 重新获取患者列表和状态
         fetchPatients();
       }
     }

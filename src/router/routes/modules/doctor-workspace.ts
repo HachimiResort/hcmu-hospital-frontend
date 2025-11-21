@@ -27,7 +27,7 @@ const DOCTOR_WORKSPACE: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'schedule-patients/:userId/:scheduleId',
+      path: 'schedule-patients/schedules/:scheduleId/patients/:userId',
       name: 'SchedulePatients',
       component: () => import('@/views/doctor-workspace/schedule-patients.vue'),
       meta: {
