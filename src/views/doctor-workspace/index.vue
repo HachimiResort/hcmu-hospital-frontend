@@ -36,46 +36,84 @@
             </div>
 
             <!-- 自定义月历布局 -->
-            <div class="custom-calendar">
-              <!-- 星期标题 -->
-              <div class="calendar-weekdays">
-                <div class="weekday">周日</div>
-                <div class="weekday">周一</div>
-                <div class="weekday">周二</div>
-                <div class="weekday">周三</div>
-                <div class="weekday">周四</div>
-                <div class="weekday">周五</div>
-                <div class="weekday">周六</div>
+            <div class="calendar-layout">
+              <div class="custom-calendar">
+                <!-- 星期标题 -->
+                <div class="calendar-weekdays">
+                  <div class="weekday">周日</div>
+                  <div class="weekday">周一</div>
+                  <div class="weekday">周二</div>
+                  <div class="weekday">周三</div>
+                  <div class="weekday">周四</div>
+                  <div class="weekday">周五</div>
+                  <div class="weekday">周六</div>
+                </div>
+
+                <!-- 日期网格 -->
+                <div class="calendar-days">
+                  <div
+                    v-for="day in calendarDays"
+                    :key="day.dateStr"
+                    class="calendar-day"
+                    :class="{
+                      'other-month': !day.isCurrentMonth,
+                      'today': day.isToday,
+                      'selected': day.dateStr === selectedDate,
+                    }"
+                    @click="handleDateSelect(day.date)"
+                  >
+                    <div class="day-number">{{ day.day }}</div>
+                    <div v-if="day.isCurrentMonth" class="day-schedules">
+                      <div
+                        v-for="schedule in getScheduleByDate(day.date)"
+                        :key="schedule.scheduleId"
+                        class="schedule-item"
+                        :class="`schedule-type-${schedule.slotType}`"
+                        @click.stop="handleScheduleClick(schedule)"
+                      >
+                        <div class="schedule-time">{{
+                          getPeriodText(schedule.slotPeriod)
+                        }}</div>
+                        <div class="schedule-count"
+                          >{{ schedule.availableSlots }}/{{
+                            schedule.totalSlots
+                          }}</div
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <!-- 日期网格 -->
-              <div class="calendar-days">
-                <div
-                  v-for="day in calendarDays"
-                  :key="day.dateStr"
-                  class="calendar-day"
-                  :class="{
-                    'other-month': !day.isCurrentMonth,
-                    'today': day.isToday,
-                  }"
-                  @click="handleDateSelect(day.date)"
-                >
-                  <div class="day-number">{{ day.day }}</div>
-                  <div v-if="day.isCurrentMonth" class="day-schedules">
-                    <div
-                      v-for="schedule in getScheduleByDate(day.date)"
-                      :key="schedule.scheduleId"
-                      class="schedule-item"
-                      :class="`schedule-type-${schedule.slotType}`"
-                      @click.stop="handleScheduleClick(schedule)"
-                    >
-                      <div class="schedule-time">{{
-                        getPeriodText(schedule.slotPeriod)
-                      }}</div>
-                      <div class="schedule-count"
+              <div class="schedule-side-panel">
+                <div class="side-header">
+                  <div class="side-date">
+                    {{ dayjs(selectedDate).format('YYYY年MM月DD日') }}
+                  </div>
+                  <div class="side-count">
+                    {{ selectedDateSchedules.length }} 条排班
+                  </div>
+                </div>
+                <a-empty
+                  v-if="selectedDateSchedules.length === 0"
+                  :description="$t('workspace.noSchedule') || '暂无排班'"
+                />
+                <div v-else class="side-list">
+                  <div
+                    v-for="schedule in selectedDateSchedules"
+                    :key="schedule.scheduleId"
+                    class="side-item"
+                    :class="`schedule-type-${schedule.slotType}`"
+                    @click="handleScheduleClick(schedule)"
+                  >
+                    <div class="side-time">
+                      {{ getPeriodText(schedule.slotPeriod) }}
+                    </div>
+                    <div class="side-meta">
+                      <span class="side-availability"
                         >{{ schedule.availableSlots }}/{{
                           schedule.totalSlots
-                        }}</div
+                        }}</span
                       >
                     </div>
                   </div>
@@ -423,6 +461,10 @@
     return schedules.value.filter((s) => s.scheduleDate === dateStr);
   };
 
+  const selectedDateSchedules = computed(() =>
+    schedules.value.filter((s) => s.scheduleDate === selectedDate.value)
+  );
+
   // 获取时段文本
   const getPeriodText = (period: number) => {
     const slotPeriodMap: Record<number, string> = {
@@ -601,6 +643,13 @@
 
     // 排班日历样式
     .calendar-card {
+      .calendar-layout {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
       // 自定义日历头部
       .calendar-header-custom {
         display: flex;
@@ -650,7 +699,8 @@
         border: 1px solid var(--color-border-2);
         border-radius: 8px;
         overflow: hidden;
-        width: 840px;
+        flex: 1 1 640px;
+        min-width: 640px;
         height: 768px;
 
         .calendar-weekdays {
@@ -670,6 +720,10 @@
 
             &:last-child {
               border-right: none;
+            }
+
+            &.selected {
+              box-shadow: inset 0 0 0 2px rgb(var(--primary-6));
             }
           }
         }
@@ -903,6 +957,90 @@
               opacity: 0.9;
               margin-left: 8px;
             }
+          }
+        }
+      }
+
+      .schedule-side-panel {
+        width: 320px;
+        min-height: 768px;
+        border: 1px solid var(--color-border-2);
+        border-radius: 8px;
+        padding: 16px;
+        background-color: var(--color-bg-2);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .side-header {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .side-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-1);
+          }
+
+          .side-count {
+            font-size: 13px;
+            color: var(--color-text-3);
+          }
+        }
+
+        .side-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .side-item {
+          padding: 12px;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 1px solid var(--color-border-2);
+          transition: box-shadow 0.2s, transform 0.2s;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+          }
+
+          .side-time {
+            font-weight: 700;
+            margin-bottom: 6px;
+          }
+
+          .side-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-3);
+            font-size: 13px;
+
+            .side-availability {
+              font-weight: 600;
+              color: var(--color-text-1);
+            }
+          }
+
+          &.schedule-type-1 {
+            background-color: rgb(var(--blue-1));
+            border-color: rgb(var(--blue-3));
+            color: rgb(var(--blue-7));
+          }
+
+          &.schedule-type-2 {
+            background-color: rgb(var(--green-1));
+            border-color: rgb(var(--green-3));
+            color: rgb(var(--green-7));
+          }
+
+          &.schedule-type-3 {
+            background-color: rgb(var(--orange-1));
+            border-color: rgb(var(--orange-3));
+            color: rgb(var(--orange-7));
           }
         }
       }
