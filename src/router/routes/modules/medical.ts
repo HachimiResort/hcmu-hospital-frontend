@@ -29,7 +29,7 @@ const MEDICAL: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.medical.doctorProfilePage',
         requiresPerm: true,
-        permission: 'CHECK_DOCTOR',
+        permission: 'DOCTOR_MG_PAGE',
       },
     },
     {
@@ -39,7 +39,7 @@ const MEDICAL: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.medical.operationRulePage',
         requiresPerm: true,
-        permission: 'CHECK_RULE',
+        permission: 'RULE_MG_PAGE',
       },
     },
     {
@@ -49,7 +49,7 @@ const MEDICAL: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.medical.patientProfilePage',
         requiresPerm: true,
-        permission: 'CHECK_PATIENT',
+        permission: 'PATIENT_MG_PAGE',
       },
     },
     {
@@ -59,7 +59,7 @@ const MEDICAL: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.medical.schedulePage',
         requiresPerm: true,
-        permission: 'CHECK_SCHEDULE',
+        permission: 'SCHEDULE_MG_PAGE',
       },
     },
   ],
