@@ -41,8 +41,9 @@ export default {
   'schedulePage.slotType.special': 'Special',
 
   // Status
-  'schedulePage.status.inactive': 'Inactive',
-  'schedulePage.status.active': 'Active',
+  'schedulePage.status.open': 'Open',
+  'schedulePage.status.full': 'Full',
+  'schedulePage.status.closed': 'Closed',
 
   // Table Columns
   'schedulePage.columns.index': 'Index',

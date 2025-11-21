@@ -39,8 +39,9 @@ export default {
   'schedulePage.slotType.special': '特需号',
 
   // 状态
-  'schedulePage.status.inactive': '停用',
-  'schedulePage.status.active': '启用',
+  'schedulePage.status.open': '开放预约',
+  'schedulePage.status.full': '约满',
+  'schedulePage.status.closed': '停诊',
 
   // 表格列
   'schedulePage.columns.index': '序号',

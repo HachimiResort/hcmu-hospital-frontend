@@ -5,6 +5,7 @@ import localeLogin from '@/views/login/locale/en-US';
 import localeBranch from '@/views/branch/locale/en-US';
 import localePersonal from '@/views/personal/locale/en-US';
 import localeLogPage from '@/views/logPage/log-page/locale/en-US';
+import localeDoctorWorkspace from '@/views/doctor-workspace/locale/en-US';
 
 import localePersonnel from '@/views/personnel/locale/en-US';
 import localeSystem from '@/views/system/locale/en-US';
@@ -52,6 +53,7 @@ export default {
   'menu.medical.patientProfilePage': 'Patient Profile Management',
   'menu.medical.schedulePage': 'Doctor Schedule Management',
   'menu.doctorWorkspace': 'Doctor Workspace',
+  'menu.schedulePatients': 'Schedule Patients Management',
   'menu.display': 'Project display',
   'menu.about': 'About',
 
@@ -79,6 +81,9 @@ export default {
   'workspace.specialtyPlaceholder':
     'Enter specialty, e.g.: Cardiovascular diseases',
   'workspace.bioPlaceholder': 'Enter your bio',
+  'workspace.applyScheduleChange': 'Apply for Schedule Change',
+  'workspace.applyScheduleChangeComingSoon':
+    'Schedule change application feature coming soon',
 
   ...localeSystem,
   ...localeState,
@@ -90,4 +95,5 @@ export default {
   ...localePersonal,
   ...localePersonnel,
   ...localeLogPage,
+  ...localeDoctorWorkspace,
 };

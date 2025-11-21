@@ -8,6 +8,14 @@
           :bordered="false"
           class="calendar-card"
         >
+          <template #extra>
+            <a-button type="primary" @click="handleApplyScheduleChange">
+              <template #icon>
+                <icon-edit />
+              </template>
+              {{ $t('workspace.applyScheduleChange') }}
+            </a-button>
+          </template>
           <a-spin :loading="scheduleLoading">
             <!-- 自定义日历头部 -->
             <div class="calendar-header-custom">
@@ -27,42 +35,53 @@
               </a-button>
             </div>
 
-            <a-calendar
-              v-model:panel-value="selectedDate"
-              v-model:panel-mode="panelMode"
-              :header-render="() => null"
-              @panel-change="handlePanelChange"
-              @select="handleDateSelect"
-            >
-              <template #cell="{ date }">
-                <div class="calendar-cell">
-                  <div class="date-number">{{ dayjs(date).date() }}</div>
-                  <div
-                    v-if="getScheduleByDate(date).length > 0"
-                    class="schedule-info"
-                  >
-                    <a-space direction="vertical" :size="4" fill>
-                      <a-tag
-                        v-for="schedule in getScheduleByDate(date)"
-                        :key="schedule.scheduleId"
-                        :color="getPeriodColor(schedule.slotPeriod)"
-                        size="small"
-                        class="schedule-tag"
+            <!-- 自定义月历布局 -->
+            <div class="custom-calendar">
+              <!-- 星期标题 -->
+              <div class="calendar-weekdays">
+                <div class="weekday">周日</div>
+                <div class="weekday">周一</div>
+                <div class="weekday">周二</div>
+                <div class="weekday">周三</div>
+                <div class="weekday">周四</div>
+                <div class="weekday">周五</div>
+                <div class="weekday">周六</div>
+              </div>
+
+              <!-- 日期网格 -->
+              <div class="calendar-days">
+                <div
+                  v-for="day in calendarDays"
+                  :key="day.dateStr"
+                  class="calendar-day"
+                  :class="{
+                    'other-month': !day.isCurrentMonth,
+                    'today': day.isToday,
+                  }"
+                  @click="handleDateSelect(day.date)"
+                >
+                  <div class="day-number">{{ day.day }}</div>
+                  <div v-if="day.isCurrentMonth" class="day-schedules">
+                    <div
+                      v-for="schedule in getScheduleByDate(day.date)"
+                      :key="schedule.scheduleId"
+                      class="schedule-item"
+                      :class="`schedule-type-${schedule.slotType}`"
+                      @click.stop="handleScheduleClick(schedule)"
+                    >
+                      <div class="schedule-time">{{
+                        getPeriodText(schedule.slotPeriod)
+                      }}</div>
+                      <div class="schedule-count"
+                        >{{ schedule.availableSlots }}/{{
+                          schedule.totalSlots
+                        }}</div
                       >
-                        <span class="tag-text">{{
-                          getPeriodText(schedule.slotPeriod)
-                        }}</span>
-                        <span class="tag-slots"
-                          >{{ schedule.availableSlots }}/{{
-                            schedule.totalSlots
-                          }}</span
-                        >
-                      </a-tag>
-                    </a-space>
+                    </div>
                   </div>
                 </div>
-              </template>
-            </a-calendar>
+              </div>
+            </div>
           </a-spin>
         </a-card>
       </a-col>
@@ -209,12 +228,14 @@
 <script lang="ts" setup>
   import { ref, onMounted, watch, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
   import axios from 'axios';
   import dayjs from 'dayjs';
 
   const { t } = useI18n();
+  const router = useRouter();
   const userStore = useUserStore();
 
   const profileLoading = ref(false);
@@ -227,6 +248,39 @@
   // 计算当前月份标题
   const currentMonthTitle = computed(() => {
     return dayjs(selectedDate.value).format('YYYY年MM月');
+  });
+
+  // 生成月历数据
+  const calendarDays = computed(() => {
+    const currentMonth = dayjs(selectedDate.value);
+    const firstDay = currentMonth.startOf('month');
+    const lastDay = currentMonth.endOf('month');
+
+    // 获取第一天是星期几 (0=周日)
+    const firstDayOfWeek = firstDay.day();
+
+    // 获取上个月需要显示的天数
+    const prevMonthDays = firstDayOfWeek;
+    const prevMonthStart = firstDay.subtract(prevMonthDays, 'day');
+
+    // 计算需要显示的总天数 (通常是 35 或 42 天)
+    const totalDays = 42;
+
+    const days = [];
+    const today = dayjs();
+
+    for (let i = 0; i < totalDays; i += 1) {
+      const date = prevMonthStart.add(i, 'day');
+      days.push({
+        date: date.toDate(),
+        dateStr: date.format('YYYY-MM-DD'),
+        day: date.date(),
+        isCurrentMonth: date.month() === currentMonth.month(),
+        isToday: date.isSame(today, 'day'),
+      });
+    }
+
+    return days;
   });
 
   interface DoctorProfile {
@@ -265,26 +319,51 @@
   const fetchDoctorProfile = async () => {
     try {
       profileLoading.value = true;
+      // eslint-disable-next-line no-console
+      console.log('开始获取医生档案, userId:', userStore.userId);
+
       // 使用详情接口 GET /doctor-profiles/{userId}
+      // 此接口需要 CHECK_DOCTOR 权限
       const response = await axios.get(`/doctor-profiles/${userStore.userId}`);
 
-      if (response.data.code === 0 && response.data.data) {
-        const { data } = response.data;
+      // eslint-disable-next-line no-console
+      console.log('医生档案接口返回:', response.data);
+
+      // 后端直接返回数据对象,没有包装在 { code, msg, data } 中
+      if (response.data && response.data.doctorProfileId) {
+        const {
+          doctorProfileId,
+          userId,
+          userName,
+          name,
+          departmentId,
+          departmentName,
+          title,
+          specialty,
+          bio,
+        } = response.data;
         doctorProfile.value = {
-          doctorProfileId: data.doctorProfileId,
-          userId: data.userId,
-          userName: data.userName,
-          name: data.name,
-          departmentId: data.departmentId,
-          departmentName: data.departmentName,
-          title: data.title,
-          specialty: data.specialty,
-          bio: data.bio,
+          doctorProfileId,
+          userId,
+          userName,
+          name,
+          departmentId,
+          departmentName,
+          title,
+          specialty,
+          bio,
         };
+        // eslint-disable-next-line no-console
+        console.log('医生档案设置成功:', doctorProfile.value);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('获取医生档案失败,数据格式不正确:', response.data);
+        Message.error('获取医生档案失败,请检查权限配置');
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('获取医生档案失败:', error);
+      Message.error('获取医生档案失败,请检查是否有CHECK_DOCTOR权限');
     } finally {
       profileLoading.value = false;
     }
@@ -297,22 +376,41 @@
       const start = startDate || dayjs().startOf('month').format('YYYY-MM-DD');
       const end = endDate || dayjs().endOf('month').format('YYYY-MM-DD');
 
-      const response = await axios.get('/schedules', {
-        params: {
-          doctorUserId: userStore.userId,
-          scheduleStartDate: start,
-          scheduleEndDate: end,
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
+      // 使用医生档案接口下的排班查询接口 GET /doctor-profiles/{userId}/schedules
+      const response = await axios.get(
+        `/doctor-profiles/${userStore.userId}/schedules`,
+        {
+          params: {
+            scheduleStartDate: start,
+            scheduleEndDate: end,
+            pageNum: 1,
+            pageSize: 100,
+          },
+        }
+      );
 
-      if (response.data.code === 0 && response.data.data) {
-        schedules.value = response.data.data.list || [];
+      // eslint-disable-next-line no-console
+      console.log('排班接口返回:', response.data);
+
+      // 后端实际返回 { list: [...], total: ... }，未包装在标准格式中
+      if (response.data && response.data.list) {
+        schedules.value = response.data.list || [];
+        // eslint-disable-next-line no-console
+        console.log('排班数据设置成功,共', schedules.value.length, '条记录');
+        // eslint-disable-next-line no-console
+        console.log(
+          '排班日期列表:',
+          schedules.value.map((s) => s.scheduleDate)
+        );
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('获取排班失败,数据格式不正确:', response.data);
+        Message.error('获取排班信息失败');
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('获取排班失败:', error);
+      Message.error('获取排班信息失败');
     } finally {
       scheduleLoading.value = false;
     }
@@ -326,35 +424,26 @@
 
   // 获取时段文本
   const getPeriodText = (period: number) => {
-    const map: Record<number, string> = {
-      1: t('workspace.morning'),
-      2: t('workspace.afternoon'),
-      3: t('workspace.evening'),
+    const slotPeriodMap: Record<number, string> = {
+      1: '上午8:00-8:30',
+      2: '上午8:30-9:00',
+      3: '上午9:00-9:30',
+      4: '上午9:30-10:00',
+      5: '上午10:00-10:30',
+      6: '上午10:30-11:00',
+      7: '下午13:30-14:00',
+      8: '下午14:00-14:30',
+      9: '下午14:30-15:00',
+      10: '下午15:00-15:30',
+      11: '下午15:30-16:00',
+      12: '下午16:00-16:30',
     };
-    return map[period] || '';
-  };
-
-  // 获取时段颜色
-  const getPeriodColor = (period: number) => {
-    const map: Record<number, string> = {
-      1: 'orangered',
-      2: 'blue',
-      3: 'purple',
-    };
-    return map[period] || 'blue';
+    return slotPeriodMap[period] || `时段${period}`;
   };
 
   // 处理日期选择
   const handleDateSelect = (date: Date) => {
     selectedDate.value = dayjs(date).format('YYYY-MM-DD');
-  };
-
-  // 处理面板变化
-  const handlePanelChange = (date: Date) => {
-    const newDate = dayjs(date);
-    const start = newDate.startOf('month').format('YYYY-MM-DD');
-    const end = newDate.endOf('month').format('YYYY-MM-DD');
-    fetchSchedules(start, end);
   };
 
   // 上一个月
@@ -393,26 +482,40 @@
   const handleSaveProfile = async () => {
     try {
       saveLoading.value = true;
-      // 调用医生更新自己的档案接口 PUT /doctor-profiles/self
+      // 使用 PUT /doctor-profiles/self 接口
       const updateData = {
         specialty: editForm.value.specialty,
         bio: editForm.value.bio,
       };
 
+      // eslint-disable-next-line no-console
+      console.log('准备保存档案, 数据:', updateData);
+
       const response = await axios.put('/doctor-profiles/self', updateData);
 
-      if (response.data.code === 0) {
+      // eslint-disable-next-line no-console
+      console.log('保存档案接口返回(经过拦截器):', response);
+
+      // axios拦截器已经处理了响应，response就是res (即原始的response.data)
+      // 拦截器在res.code === 200时返回res，所以这里response就是HttpResponse类型
+      const res = response as any;
+      if (res.code === 200 || res.code === 0) {
         Message.success(t('workspace.saveSuccess'));
-        // 重新获取档案信息
-        await fetchDoctorProfile();
+
+        // 直接更新本地数据，界面会立即更新
+        doctorProfile.value.specialty = editForm.value.specialty;
+        doctorProfile.value.bio = editForm.value.bio;
+
         editModalVisible.value = false;
       } else {
-        Message.error(response.data.msg || t('workspace.saveError'));
+        Message.error(res.msg || t('workspace.saveError'));
       }
-    } catch (error) {
+    } catch (error: any) {
       // eslint-disable-next-line no-console
       console.error('保存医生档案失败:', error);
-      Message.error(t('workspace.saveError'));
+      Message.error(
+        error?.response?.data?.msg || error?.message || t('workspace.saveError')
+      );
     } finally {
       saveLoading.value = false;
     }
@@ -421,6 +524,22 @@
   // 取消编辑
   const handleCancelEdit = () => {
     editModalVisible.value = false;
+  };
+
+  // 点击排班时段
+  const handleScheduleClick = (schedule: Schedule) => {
+    router.push({
+      name: 'SchedulePatients',
+      params: {
+        userId: userStore.userId,
+        scheduleId: schedule.scheduleId,
+      },
+    });
+  };
+
+  // 申请修改排班(暂时只是个按钮，下次实现功能)
+  const handleApplyScheduleChange = () => {
+    Message.info(t('workspace.applyScheduleChangeComingSoon'));
   };
 
   // 初始化加载数据
@@ -521,6 +640,168 @@
 
           .arco-icon {
             font-size: 16px;
+          }
+        }
+      }
+
+      // 自定义日历样式
+      .custom-calendar {
+        border: 1px solid var(--color-border-2);
+        border-radius: 8px;
+        overflow: hidden;
+        width: 840px;
+        height: 768px;
+
+        .calendar-weekdays {
+          display: grid;
+          grid-template-columns: repeat(7, 120px);
+          background-color: var(--color-fill-2);
+          border-bottom: 1px solid var(--color-border-2);
+          height: 48px;
+
+          .weekday {
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--color-text-2);
+            border-right: 1px solid var(--color-border-2);
+
+            &:last-child {
+              border-right: none;
+            }
+          }
+        }
+
+        .calendar-days {
+          display: grid;
+          grid-template-columns: repeat(7, 120px);
+          grid-template-rows: repeat(6, 120px);
+          background-color: var(--color-bg-2);
+
+          .calendar-day {
+            background-color: var(--color-bg-2);
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-right: 1px solid var(--color-border-2);
+            border-bottom: 1px solid var(--color-border-2);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+
+            &:nth-child(7n) {
+              border-right: none;
+            }
+
+            &:nth-last-child(-n + 7) {
+              border-bottom: none;
+            }
+
+            &:hover {
+              background-color: var(--color-fill-2);
+              z-index: 1;
+            }
+
+            &.other-month {
+              background-color: var(--color-fill-1);
+              opacity: 0.5;
+
+              .day-number {
+                color: var(--color-text-3);
+              }
+            }
+
+            &.today {
+              background-color: rgb(var(--primary-1));
+
+              .day-number {
+                background-color: rgb(var(--primary-6));
+                color: white;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+              }
+            }
+
+            .day-number {
+              font-size: 14px;
+              font-weight: 500;
+              margin-bottom: 6px;
+              color: var(--color-text-1);
+              display: block;
+              text-align: left;
+              flex-shrink: 0;
+            }
+
+            .day-schedules {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+              flex: 1;
+              overflow-y: auto;
+              overflow-x: hidden;
+
+              &::-webkit-scrollbar {
+                width: 4px;
+              }
+
+              &::-webkit-scrollbar-thumb {
+                background-color: var(--color-border-3);
+                border-radius: 2px;
+              }
+
+              .schedule-item {
+                padding: 4px 6px;
+                border-radius: 4px;
+                font-size: 11px;
+                line-height: 1.3;
+                flex-shrink: 0;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                }
+
+                &.schedule-type-1 {
+                  background-color: rgb(var(--blue-1));
+                  border: 1px solid rgb(var(--blue-3));
+                  color: rgb(var(--blue-6));
+                }
+
+                &.schedule-type-2 {
+                  background-color: rgb(var(--green-1));
+                  border: 1px solid rgb(var(--green-3));
+                  color: rgb(var(--green-6));
+                }
+
+                &.schedule-type-3 {
+                  background-color: rgb(var(--orange-1));
+                  border: 1px solid rgb(var(--orange-3));
+                  color: rgb(var(--orange-6));
+                }
+
+                .schedule-time {
+                  font-weight: 500;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+
+                .schedule-count {
+                  font-weight: 700;
+                  margin-top: 2px;
+                }
+              }
+            }
           }
         }
       }
