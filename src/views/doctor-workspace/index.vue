@@ -669,7 +669,7 @@
         .calendar-days {
           display: grid;
           grid-template-columns: repeat(7, minmax(90px, 1fr));
-          grid-template-rows: repeat(6, minmax(100px, 1fr));
+          grid-template-rows: repeat(6, 120px);
           background-color: var(--color-bg-2);
 
           .calendar-day {
