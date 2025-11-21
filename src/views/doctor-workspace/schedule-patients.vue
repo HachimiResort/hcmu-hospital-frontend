@@ -134,9 +134,10 @@
                 <a-alert
                   v-if="appointmentStatus === 1"
                   type="warning"
-                  :message="$t('schedulePatients.status.unpaid')"
                   show-icon
-                />
+                >
+                  {{ $t('schedulePatients.status.unpaid') }}
+                </a-alert>
 
                 <!-- Status 2: 已支付,显示传呼按钮 -->
                 <a-space
@@ -144,11 +145,9 @@
                   direction="vertical"
                   size="medium"
                 >
-                  <a-alert
-                    type="success"
-                    :message="$t('schedulePatients.status.paid')"
-                    show-icon
-                  />
+                  <a-alert type="success" show-icon>
+                    {{ $t('schedulePatients.status.paid') }}
+                  </a-alert>
                   <a-button
                     type="primary"
                     :loading="callLoading"
@@ -164,11 +163,9 @@
                   direction="vertical"
                   size="medium"
                 >
-                  <a-alert
-                    type="info"
-                    :message="$t('schedulePatients.status.called')"
-                    show-icon
-                  />
+                  <a-alert type="info" show-icon>
+                    {{ $t('schedulePatients.status.called') }}
+                  </a-alert>
                   <a-space>
                     <a-button
                       type="primary"
@@ -191,25 +188,28 @@
                 <a-alert
                   v-else-if="appointmentStatus === 4"
                   type="success"
-                  :message="$t('schedulePatients.status.completed')"
                   show-icon
-                />
+                >
+                  {{ $t('schedulePatients.status.completed') }}
+                </a-alert>
 
                 <!-- Status 5: 已取消 -->
                 <a-alert
                   v-else-if="appointmentStatus === 5"
                   type="warning"
-                  :message="$t('schedulePatients.status.cancelled')"
                   show-icon
-                />
+                >
+                  {{ $t('schedulePatients.status.cancelled') }}
+                </a-alert>
 
                 <!-- Status 6: 爽约 -->
                 <a-alert
                   v-else-if="appointmentStatus === 6"
                   type="error"
-                  :message="$t('schedulePatients.status.noShow')"
                   show-icon
-                />
+                >
+                  {{ $t('schedulePatients.status.noShow') }}
+                </a-alert>
               </div>
             </div>
             <a-empty
