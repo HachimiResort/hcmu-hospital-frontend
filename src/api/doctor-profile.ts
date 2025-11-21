@@ -56,6 +56,16 @@ export interface DoctorProfileUpdateDTO {
   bio?: string;
 }
 
+// 时段患者列表项
+export interface SchedulePatientDTO {
+  userId: number;
+  userName: string;
+  name: string;
+  sex: string;
+  email: string;
+  phone: string;
+}
+
 /**
  * 查询医生档案列表
  * @param requestDTO DoctorProfileGetRequestDTO
@@ -123,4 +133,15 @@ export function deleteDoctorProfile(doctorProfileId: number) {
  */
 export function batchDeleteDoctorProfiles(doctorProfileIds: number[]) {
   return axios.delete<string>(`${base}/batch`, { data: doctorProfileIds });
+}
+
+/**
+ * 查询排班下的患者列表
+ * @param userId 医生用户ID
+ * @param scheduleId 排班ID
+ */
+export function getSchedulePatients(userId: number, scheduleId: number) {
+  return axios.get<SchedulePatientDTO[]>(
+    `${base}/${userId}/schedules/${scheduleId}/patients`
+  );
 }

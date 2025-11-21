@@ -299,6 +299,7 @@
     scheduleId: number;
     scheduleDate: string;
     slotPeriod: number;
+    slotType: number;
     totalSlots: number;
     availableSlots: number;
     status: number;
@@ -531,8 +532,8 @@
     router.push({
       name: 'SchedulePatients',
       params: {
-        userId: userStore.userId,
         scheduleId: schedule.scheduleId,
+        userId: userStore.userId,
       },
     });
   };
