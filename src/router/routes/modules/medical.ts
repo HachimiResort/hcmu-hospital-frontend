@@ -62,6 +62,17 @@ const MEDICAL: AppRouteRecordRaw = {
         permission: 'SCHEDULE_MG_PAGE',
       },
     },
+    {
+      path: 'schedule-template-page',
+      name: 'MedicalScheduleTemplatePage',
+      component: () =>
+        import('@/views/system/schedule-template-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.scheduleTemplatePage',
+        requiresPerm: true,
+        permission: 'TEMPLATE_MG_PAGE',
+      },
+    },
   ],
 };
 
