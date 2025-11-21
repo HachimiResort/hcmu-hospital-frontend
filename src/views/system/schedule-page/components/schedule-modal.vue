@@ -133,8 +133,9 @@
           v-model="form.status"
           :placeholder="$t('schedulePage.modal.form.status.placeholder')"
         >
-          <a-option :value="0" :label="$t('schedulePage.status.inactive')" />
-          <a-option :value="1" :label="$t('schedulePage.status.active')" />
+          <a-option :value="1" :label="$t('schedulePage.status.open')" />
+          <a-option :value="2" :label="$t('schedulePage.status.full')" />
+          <a-option :value="3" :label="$t('schedulePage.status.closed')" />
         </a-select>
       </a-form-item>
     </a-form>

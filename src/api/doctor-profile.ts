@@ -20,6 +20,7 @@ export interface DoctorProfileDetailDTO {
   doctorProfileId: number;
   userId: number;
   userName: string;
+  name: string;
   departmentId: number;
   departmentName: string;
   title: string;
@@ -54,6 +55,41 @@ export interface DoctorProfileUpdateDTO {
   title?: string;
   specialty?: string;
   bio?: string;
+}
+
+// 时段患者列表项
+export interface SchedulePatientDTO {
+  userId: number;
+  userName: string;
+  name: string;
+  sex: string;
+  email: string;
+  phone: string;
+}
+
+// 医生排班列表项
+export interface DoctorScheduleDTO {
+  scheduleId: number;
+  scheduleDate: string;
+  slotPeriod: number;
+  slotType: number;
+  totalSlots: number;
+  availableSlots: number;
+  status: number;
+}
+
+// 医生排班查询参数
+export interface DoctorScheduleQueryDTO {
+  scheduleStartDate: string;
+  scheduleEndDate: string;
+  pageNum?: number;
+  pageSize?: number;
+}
+
+// 医生排班列表响应
+export interface DoctorScheduleListDTO {
+  list: DoctorScheduleDTO[];
+  total: number;
 }
 
 /**
@@ -123,4 +159,37 @@ export function deleteDoctorProfile(doctorProfileId: number) {
  */
 export function batchDeleteDoctorProfiles(doctorProfileIds: number[]) {
   return axios.delete<string>(`${base}/batch`, { data: doctorProfileIds });
+}
+
+/**
+ * 更新当前登录医生档案（仅允许修改个人字段）
+ * @param params DoctorProfileUpdateDTO
+ */
+export function updateDoctorProfileSelf(params: DoctorProfileUpdateDTO) {
+  return axios.put<string>(`${base}/self`, params);
+}
+
+/**
+ * 查询排班下的患者列表
+ * @param userId 医生用户ID
+ * @param scheduleId 排班ID
+ */
+export function getSchedulePatients(userId: number, scheduleId: number) {
+  return axios.get<SchedulePatientDTO[]>(
+    `${base}/${userId}/schedules/${scheduleId}/patients`
+  );
+}
+
+/**
+ * 查询医生排班列表
+ * @param userId 医生用户ID
+ * @param params DoctorScheduleQueryDTO
+ */
+export function getDoctorSchedules(
+  userId: number,
+  params: DoctorScheduleQueryDTO
+) {
+  return axios.get<DoctorScheduleListDTO>(`${base}/${userId}/schedules`, {
+    params,
+  });
 }

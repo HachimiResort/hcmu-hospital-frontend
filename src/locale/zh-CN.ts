@@ -6,6 +6,7 @@ import localeBranch from '@/views/branch/locale/zh-CN';
 import localePersonal from '@/views/personal/locale/zh-CN';
 import localePersonnel from '@/views/personnel/locale/zh-CN';
 import localeLogPage from '@/views/logPage/log-page/locale/zh-CN';
+import localeDoctorWorkspace from '@/views/doctor-workspace/locale/zh-CN';
 
 import localeSystem from '@/views/system/locale/zh-CN';
 import localeState from '@/utils/state/locale/zh-CN';
@@ -52,6 +53,7 @@ export default {
   'menu.medical.patientProfilePage': '患者档案管理',
   'menu.medical.schedulePage': '医生排班管理',
   'menu.doctorWorkspace': '医生工作台',
+  'menu.schedulePatients': '时段患者管理',
   'menu.display': '项目展示',
   'menu.about': '关于',
 
@@ -78,6 +80,8 @@ export default {
   'workspace.titlePlaceholder': '请输入职称，如：主任医师',
   'workspace.specialtyPlaceholder': '请输入专长，如：心血管疾病诊治',
   'workspace.bioPlaceholder': '请输入个人简介',
+  'workspace.applyScheduleChange': '申请修改排班',
+  'workspace.applyScheduleChangeComingSoon': '申请修改排班功能即将上线',
 
   ...localeSystem,
   ...localeState,
@@ -89,4 +93,5 @@ export default {
   ...localePersonal,
   ...localePersonnel,
   ...localeLogPage,
+  ...localeDoctorWorkspace,
 };
