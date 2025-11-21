@@ -56,7 +56,9 @@
                   <div class="template-name">{{ template.templateName }}</div>
                   <a-dropdown
                     trigger="click"
-                    @select="(val: string) => handleTemplateAction(val, template)"
+                    @select="
+                      (val) => handleTemplateAction(String(val), template)
+                    "
                   >
                     <a-button
                       type="text"
@@ -364,7 +366,7 @@
               <a-input-number
                 v-model="scheduleForm.fee"
                 :min="0"
-                :formatter="(value) => `${value}`"
+                :formatter="(value: number | string | undefined) => `${value ?? ''}`"
                 :placeholder="
                   $t('scheduleTemplatePage.scheduleForm.feePlaceholder')
                 "

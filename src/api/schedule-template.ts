@@ -11,7 +11,7 @@ export interface TemplateListDTO {
   updateTime: string;
 }
 
-export interface TemplateGetRequestDTO {
+export interface TemplateGetRequestDTO extends Record<string, unknown> {
   pageNum?: number;
   pageSize?: number;
   templateName?: string;
@@ -38,7 +38,7 @@ export interface TemplateScheduleListDTO {
   updateTime: string;
 }
 
-export interface TemplateScheduleGetRequestDTO {
+export interface TemplateScheduleGetRequestDTO extends Record<string, unknown> {
   pageNum?: number;
   pageSize?: number;
   slotType?: number;
