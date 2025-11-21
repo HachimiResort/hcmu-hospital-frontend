@@ -269,7 +269,13 @@
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
-  import axios from 'axios';
+  import {
+    DoctorProfileDetailDTO,
+    DoctorScheduleDTO,
+    getDoctorProfileByUserId,
+    getDoctorSchedules,
+    updateDoctorProfileSelf,
+  } from '@/api/doctor-profile';
   import dayjs from 'dayjs';
 
   const { t } = useI18n();
@@ -292,7 +298,6 @@
   const calendarDays = computed(() => {
     const currentMonth = dayjs(selectedDate.value);
     const firstDay = currentMonth.startOf('month');
-    const lastDay = currentMonth.endOf('month');
 
     // 获取第一天是星期几 (0=周日)
     const firstDayOfWeek = firstDay.day();
@@ -321,31 +326,9 @@
     return days;
   });
 
-  interface DoctorProfile {
-    doctorProfileId?: number;
-    userId?: number;
-    userName?: string;
-    name?: string;
-    departmentId?: number;
-    departmentName?: string;
-    title?: string;
-    specialty?: string;
-    bio?: string;
-  }
-
-  interface Schedule {
-    scheduleId: number;
-    scheduleDate: string;
-    slotPeriod: number;
-    slotType: number;
-    totalSlots: number;
-    availableSlots: number;
-    status: number;
-  }
-
-  const doctorProfile = ref<DoctorProfile>({});
-  const schedules = ref<Schedule[]>([]);
-  const editForm = ref<DoctorProfile>({});
+  const doctorProfile = ref<Partial<DoctorProfileDetailDTO>>({});
+  const schedules = ref<DoctorScheduleDTO[]>([]);
+  const editForm = ref<Partial<DoctorProfileDetailDTO>>({});
 
   // 强制保持月视图
   watch(panelMode, (newMode) => {
@@ -361,42 +344,18 @@
       // eslint-disable-next-line no-console
       console.log('开始获取医生档案, userId:', userStore.userId);
 
-      // 使用详情接口 GET /doctor-profiles/{userId}
-      // 此接口需要 CHECK_DOCTOR 权限
-      const response = await axios.get(`/doctor-profiles/${userStore.userId}`);
+      const { data } = await getDoctorProfileByUserId(userStore.userId);
 
       // eslint-disable-next-line no-console
-      console.log('医生档案接口返回:', response.data);
+      console.log('医生档案接口返回:', data);
 
-      // 后端直接返回数据对象,没有包装在 { code, msg, data } 中
-      if (response.data && response.data.doctorProfileId) {
-        const {
-          doctorProfileId,
-          userId,
-          userName,
-          name,
-          departmentId,
-          departmentName,
-          title,
-          specialty,
-          bio,
-        } = response.data;
-        doctorProfile.value = {
-          doctorProfileId,
-          userId,
-          userName,
-          name,
-          departmentId,
-          departmentName,
-          title,
-          specialty,
-          bio,
-        };
+      if (data && (data as any).doctorProfileId) {
+        doctorProfile.value = data;
         // eslint-disable-next-line no-console
         console.log('医生档案设置成功:', doctorProfile.value);
       } else {
         // eslint-disable-next-line no-console
-        console.error('获取医生档案失败,数据格式不正确:', response.data);
+        console.error('获取医生档案失败,数据格式不正确:', data);
         Message.error('获取医生档案失败,请检查权限配置');
       }
     } catch (error) {
@@ -415,37 +374,25 @@
       const start = startDate || dayjs().startOf('month').format('YYYY-MM-DD');
       const end = endDate || dayjs().endOf('month').format('YYYY-MM-DD');
 
-      // 使用医生档案接口下的排班查询接口 GET /doctor-profiles/{userId}/schedules
-      const response = await axios.get(
-        `/doctor-profiles/${userStore.userId}/schedules`,
-        {
-          params: {
-            scheduleStartDate: start,
-            scheduleEndDate: end,
-            pageNum: 1,
-            pageSize: 100,
-          },
-        }
-      );
+      const { data } = await getDoctorSchedules(userStore.userId, {
+        scheduleStartDate: start,
+        scheduleEndDate: end,
+        pageNum: 1,
+        pageSize: 100,
+      });
 
       // eslint-disable-next-line no-console
-      console.log('排班接口返回:', response.data);
+      console.log('排班接口返回:', data);
 
-      // 后端实际返回 { list: [...], total: ... }，未包装在标准格式中
-      if (response.data && response.data.list) {
-        schedules.value = response.data.list || [];
-        // eslint-disable-next-line no-console
-        console.log('排班数据设置成功,共', schedules.value.length, '条记录');
-        // eslint-disable-next-line no-console
-        console.log(
-          '排班日期列表:',
-          schedules.value.map((s) => s.scheduleDate)
-        );
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('获取排班失败,数据格式不正确:', response.data);
-        Message.error('获取排班信息失败');
-      }
+      const list = (data && (data as any).list) || [];
+      schedules.value = list;
+      // eslint-disable-next-line no-console
+      console.log('排班数据设置成功,共', schedules.value.length, '条记录');
+      // eslint-disable-next-line no-console
+      console.log(
+        '排班日期列表:',
+        schedules.value.map((s) => s.scheduleDate)
+      );
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('获取排班失败:', error);
@@ -534,25 +481,14 @@
       // eslint-disable-next-line no-console
       console.log('准备保存档案, 数据:', updateData);
 
-      const response = await axios.put('/doctor-profiles/self', updateData);
+      await updateDoctorProfileSelf(updateData);
+      Message.success(t('workspace.saveSuccess'));
 
-      // eslint-disable-next-line no-console
-      console.log('保存档案接口返回(经过拦截器):', response);
+      // 直接更新本地数据，界面会立即更新
+      doctorProfile.value.specialty = editForm.value.specialty;
+      doctorProfile.value.bio = editForm.value.bio;
 
-      // axios拦截器已经处理了响应，response就是res (即原始的response.data)
-      // 拦截器在res.code === 200时返回res，所以这里response就是HttpResponse类型
-      const res = response as any;
-      if (res.code === 200 || res.code === 0) {
-        Message.success(t('workspace.saveSuccess'));
-
-        // 直接更新本地数据，界面会立即更新
-        doctorProfile.value.specialty = editForm.value.specialty;
-        doctorProfile.value.bio = editForm.value.bio;
-
-        editModalVisible.value = false;
-      } else {
-        Message.error(res.msg || t('workspace.saveError'));
-      }
+      editModalVisible.value = false;
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.error('保存医生档案失败:', error);
@@ -570,7 +506,7 @@
   };
 
   // 点击排班时段
-  const handleScheduleClick = (schedule: Schedule) => {
+  const handleScheduleClick = (schedule: DoctorScheduleDTO) => {
     router.push({
       name: 'SchedulePatients',
       params: {

@@ -48,4 +48,6 @@ export default {
   'schedulePatients.message.completeError': 'Operation failed',
   'schedulePatients.message.noShowSuccess': 'Marked as no show',
   'schedulePatients.message.noShowError': 'Operation failed',
+
+  'workspace.noSchedule': 'You have no schedule for today',
 };
