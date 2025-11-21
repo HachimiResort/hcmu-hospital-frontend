@@ -648,6 +648,7 @@
         gap: 16px;
         align-items: flex-start;
         flex-wrap: wrap;
+        overflow-x: auto;
       }
 
       // 自定义日历头部
@@ -698,14 +699,15 @@
       .custom-calendar {
         border: 1px solid var(--color-border-2);
         border-radius: 8px;
-        overflow: hidden;
+        overflow: auto;
         flex: 1 1 640px;
         min-width: 640px;
+        max-width: 100%;
         height: 768px;
 
         .calendar-weekdays {
           display: grid;
-          grid-template-columns: repeat(7, 120px);
+          grid-template-columns: repeat(7, minmax(90px, 1fr));
           background-color: var(--color-fill-2);
           border-bottom: 1px solid var(--color-border-2);
           height: 48px;
@@ -730,8 +732,8 @@
 
         .calendar-days {
           display: grid;
-          grid-template-columns: repeat(7, 120px);
-          grid-template-rows: repeat(6, 120px);
+          grid-template-columns: repeat(7, minmax(90px, 1fr));
+          grid-template-rows: repeat(6, minmax(100px, 1fr));
           background-color: var(--color-bg-2);
 
           .calendar-day {
@@ -1176,6 +1178,29 @@
 
       .profile-card {
         height: auto;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .calendar-card {
+        .custom-calendar {
+          min-width: 100%;
+          height: auto;
+        }
+
+        .calendar-weekdays {
+          grid-template-columns: repeat(7, minmax(64px, 1fr));
+        }
+
+        .calendar-days {
+          grid-template-columns: repeat(7, minmax(64px, 1fr));
+          grid-template-rows: repeat(6, minmax(80px, 1fr));
+        }
+
+        .schedule-side-panel {
+          width: 100%;
+          min-height: auto;
+        }
       }
     }
 
