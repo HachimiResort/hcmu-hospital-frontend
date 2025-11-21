@@ -5,6 +5,7 @@ import localeDoctorProfilePage from '../doctor-profile-page/locale/zh-CN';
 import localePatientProfilePage from '../patient-profile-page/locale/zh-CN';
 import localeSchedulePage from '../schedule-page/locale/zh-CN';
 import localeOperationRulePage from '../operation-rule-page/locale/zh-CN';
+import localeScheduleTemplatePage from '../schedule-template-page/locale/zh-CN';
 
 export default {
   ...localeRolePage,
@@ -14,4 +15,5 @@ export default {
   ...localePatientProfilePage,
   ...localeOperationRulePage,
   ...localeSchedulePage,
+  ...localeScheduleTemplatePage,
 };
