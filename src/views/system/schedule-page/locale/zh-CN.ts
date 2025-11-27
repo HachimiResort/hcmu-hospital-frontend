@@ -62,6 +62,7 @@ export default {
   'schedulePage.button.add': '新增排班',
   'schedulePage.button.batchDelete': '批量删除',
   'schedulePage.button.copySchedule': '复制排班',
+  'schedulePage.button.importSchedule': '导入排班模板',
 
   // 新增/编辑弹窗
   'schedulePage.modal.addTitle': '新增排班',
@@ -93,13 +94,41 @@ export default {
   // 复制排班弹窗
   'schedulePage.copyModal.title': '复制排班',
   'schedulePage.copyModal.tips':
-    '将复制7天前该医生的排班到目标日期。如果目标日期已有排班，则不会覆盖。',
+    '将复制7天前该医生的排班到目标日期。如果目标日期已有排班,则不会覆盖。',
   'schedulePage.copyModal.form.doctorUserId': '医生',
   'schedulePage.copyModal.form.doctorUserId.placeholder': '请选择医生',
   'schedulePage.copyModal.form.doctorUserId.required': '请选择医生',
   'schedulePage.copyModal.form.targetDate': '目标日期',
   'schedulePage.copyModal.form.targetDate.placeholder': '请选择目标日期',
   'schedulePage.copyModal.form.targetDate.required': '请选择目标日期',
+
+  // 导入排班弹窗
+  'schedulePage.importModal.title': '导入排班模板',
+  'schedulePage.importModal.searchPlaceholder': '搜索模板名称',
+  'schedulePage.importModal.noTemplates': '暂无模板',
+  'schedulePage.importModal.selectTemplateFirst': '请先从左侧选择模板',
+  'schedulePage.importModal.preview': '模板预览',
+  'schedulePage.importModal.period': '时段',
+  'schedulePage.importModal.tips':
+    '将从选中的模板导入一周的排班到目标周。如果已有排班，则不会覆盖。',
+  'schedulePage.importModal.form.targetWeek': '目标周',
+  'schedulePage.importModal.form.targetWeek.placeholder': '请选择目标周',
+  'schedulePage.importModal.form.targetWeek.required': '请选择目标周',
+  'schedulePage.importModal.button.import': '导入',
+  'schedulePage.importModal.weekday.mon': '周一',
+  'schedulePage.importModal.weekday.tue': '周二',
+  'schedulePage.importModal.weekday.wed': '周三',
+  'schedulePage.importModal.weekday.thu': '周四',
+  'schedulePage.importModal.weekday.fri': '周五',
+  'schedulePage.importModal.weekday.sat': '周六',
+  'schedulePage.importModal.weekday.sun': '周日',
+  'schedulePage.importModal.slotType.normal': '普通号',
+  'schedulePage.importModal.slotType.expert': '专家号',
+  'schedulePage.importModal.slotType.special': '特需号',
+  'schedulePage.importModal.message.fetchError': '获取模板列表失败',
+  'schedulePage.importModal.message.requiredField': '请填写所有必填字段',
+  'schedulePage.importModal.message.importSuccess': '导入排班成功',
+  'schedulePage.importModal.message.importError': '导入排班失败',
 
   // 通用
   'common.confirm': '确认',

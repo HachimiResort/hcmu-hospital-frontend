@@ -41,6 +41,12 @@
             </template>
             {{ $t('schedulePage.button.copySchedule') }}
           </a-button>
+          <a-button @click="handleImportSchedule">
+            <template #icon>
+              <icon-import />
+            </template>
+            {{ $t('schedulePage.button.importSchedule') }}
+          </a-button>
         </a-space>
       </div>
     </template>
@@ -159,6 +165,14 @@
       @cancel="handleCopyModalCancel"
       @success="handleCopyModalSuccess"
     />
+
+    <!-- 导入排班弹窗 -->
+    <ScheduleImportModal
+      :visible="importModalVisible"
+      :user-id="selectedDoctorId || 0"
+      @cancel="handleImportModalCancel"
+      @success="handleImportModalSuccess"
+    />
   </a-card>
 </template>
 
@@ -177,6 +191,7 @@
   } from '@/api/schedule';
   import ScheduleModal from './schedule-modal.vue';
   import ScheduleCopyModal from './schedule-copy-modal.vue';
+  import ScheduleImportModal from './schedule-import-modal.vue';
 
   dayjs.extend(isoWeek);
 
@@ -224,6 +239,9 @@
 
   // 复制排班弹窗
   const copyModalVisible = ref(false);
+
+  // 导入排班弹窗
+  const importModalVisible = ref(false);
 
   // 计算当前周的日期
   const weekDays = computed(() => {
@@ -394,6 +412,22 @@
   // 复制弹窗成功
   const handleCopyModalSuccess = () => {
     copyModalVisible.value = false;
+    fetchSchedules();
+  };
+
+  // 导入排班
+  const handleImportSchedule = () => {
+    importModalVisible.value = true;
+  };
+
+  // 导入弹窗取消
+  const handleImportModalCancel = () => {
+    importModalVisible.value = false;
+  };
+
+  // 导入弹窗成功
+  const handleImportModalSuccess = () => {
+    importModalVisible.value = false;
     fetchSchedules();
   };
 

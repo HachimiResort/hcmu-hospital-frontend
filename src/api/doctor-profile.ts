@@ -193,3 +193,24 @@ export function getDoctorSchedules(
     params,
   });
 }
+
+/**
+ * 医生周排班导入参数
+ */
+export interface DoctorScheduleImportDTO {
+  scheduleDate: string; // date format: YYYY-MM-DD, determines which week
+  templateId: number; // template to import from
+}
+
+/**
+ * 从模板导入医生周排班('ADD_SCHEDULE')
+ * @param userId 医生用户ID
+ * @param params DoctorScheduleImportDTO
+ * @returns
+ */
+export function importScheduleFromTemplate(
+  userId: number,
+  params: DoctorScheduleImportDTO
+) {
+  return axios.post<string>(`${base}/${userId}/schedules`, params);
+}
