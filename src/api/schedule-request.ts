@@ -44,6 +44,11 @@ export interface ScheduleRequestQueryDTO {
   status?: number;
 }
 
+export interface ScheduleRequestHandleDTO {
+  approved: boolean;
+  approveRemark?: string;
+}
+
 export function createScheduleRequest(params: ScheduleRequestCreateDTO) {
   return axios.post(`${base}`, params);
 }
@@ -54,4 +59,11 @@ export function getScheduleRequests(params: ScheduleRequestQueryDTO) {
 
 export function cancelScheduleRequest(requestId: number) {
   return axios.post<string>(`${base}/${requestId}/cancel`);
+}
+
+export function handleScheduleRequest(
+  requestId: number,
+  params: ScheduleRequestHandleDTO
+) {
+  return axios.post<string>(`${base}/${requestId}/handle`, params);
 }

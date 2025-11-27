@@ -56,6 +56,7 @@ export default {
   'menu.medical.scheduleTemplatePage': '排班模板管理',
   'menu.doctorWorkspace': '医生工作台',
   'menu.schedulePatients': '时段患者管理',
+  'menu.system.scheduleRequestApproval': '排班申请审批',
   'menu.scheduleRequestList': '我的排班申请',
   'menu.display': '项目展示',
   'menu.about': '关于',

@@ -56,6 +56,7 @@ export default {
   'menu.medical.scheduleTemplatePage': 'Schedule Template Management',
   'menu.doctorWorkspace': 'Doctor Workspace',
   'menu.schedulePatients': 'Schedule Patients Management',
+  'menu.system.scheduleRequestApproval': 'Schedule Request Approval',
   'menu.scheduleRequestList': 'My Schedule Requests',
   'menu.display': 'Project display',
   'menu.about': 'About',
