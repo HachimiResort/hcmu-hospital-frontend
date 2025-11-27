@@ -12,7 +12,7 @@ const DOCTOR_WORKSPACE: AppRouteRecordRaw = {
     icon: 'icon-dashboard',
     order: 2,
     hideInMenu: false,
-    hideChildrenInMenu: true,
+    hideChildrenInMenu: false,
   },
   children: [
     {
@@ -35,6 +35,18 @@ const DOCTOR_WORKSPACE: AppRouteRecordRaw = {
         requiresPerm: true,
         permission: 'DOCTOR_WORK_PAGE',
         hideInMenu: true,
+        activeMenu: 'DoctorWorkspace',
+      },
+    },
+    {
+      path: 'schedule-requests',
+      name: 'DoctorScheduleRequests',
+      component: () =>
+        import('@/views/doctor-workspace/schedule-request-list.vue'),
+      meta: {
+        locale: 'menu.scheduleRequestList',
+        requiresPerm: true,
+        permission: 'DOCTOR_WORK_PAGE',
         activeMenu: 'DoctorWorkspace',
       },
     },

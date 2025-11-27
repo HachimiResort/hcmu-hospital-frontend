@@ -260,6 +260,115 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <!-- 申请修改排班 -->
+    <a-modal
+      v-model:visible="requestModalVisible"
+      :title="$t('workspace.request.title')"
+      :ok-loading="requestSubmitting"
+      width="720px"
+      @ok="handleSubmitScheduleRequest"
+      @cancel="resetRequestForm()"
+    >
+      <a-form :model="requestForm" layout="vertical">
+        <a-form-item :label="$t('workspace.request.schedule')" required>
+          <a-select
+            v-model="selectedScheduleId"
+            :options="scheduleOptions"
+            :placeholder="$t('workspace.request.schedulePlaceholder')"
+            allow-clear
+            @change="handleRequestScheduleChange"
+          />
+        </a-form-item>
+
+        <a-form-item :label="$t('workspace.request.type')" required>
+          <a-radio-group v-model="requestForm.requestType" type="button">
+            <a-radio
+              v-for="item in requestTypeOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+
+        <a-row v-if="requestForm.requestType === 1" :gutter="16">
+          <a-col :span="12">
+            <a-form-item
+              :label="$t('workspace.request.targetDate')"
+              :required="requestForm.requestType === 1"
+            >
+              <a-date-picker
+                v-model="requestForm.targetDate"
+                style="width: 100%"
+                value-format="YYYY-MM-DD"
+                :disabled-date="(current) => current < dayjs().startOf('day')"
+                :placeholder="$t('workspace.request.targetDatePlaceholder')"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+              :label="$t('workspace.request.targetSlot')"
+              :required="requestForm.requestType === 1"
+            >
+              <a-space direction="vertical" style="width: 100%">
+                <a-select
+                  v-model="requestForm.targetSlotPeriod"
+                  :placeholder="$t('workspace.request.targetPeriodPlaceholder')"
+                  allow-clear
+                >
+                  <a-option
+                    v-for="period in Object.keys(slotPeriodMap)"
+                    :key="period"
+                    :value="Number(period)"
+                    >{{ getPeriodText(Number(period)) }}</a-option
+                  >
+                </a-select>
+                <a-select
+                  v-model="requestForm.targetSlotType"
+                  :placeholder="
+                    $t('workspace.request.targetSlotTypePlaceholder')
+                  "
+                  allow-clear
+                >
+                  <a-option
+                    v-for="item in slotTypeOptions"
+                    :key="item.value"
+                    :value="item.value"
+                    >{{ item.label }}</a-option
+                  >
+                </a-select>
+              </a-space>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-form-item
+          v-if="requestForm.requestType === 1 || requestForm.requestType === 3"
+          :label="$t('workspace.request.extraSlots')"
+          :required="requestForm.requestType === 3"
+        >
+          <a-input-number
+            v-model="requestForm.extraSlots"
+            :min="1"
+            :placeholder="$t('workspace.request.extraSlotsPlaceholder')"
+            style="width: 200px"
+          />
+        </a-form-item>
+
+        <a-form-item :label="$t('workspace.request.reason')">
+          <a-textarea
+            v-model="requestForm.reason"
+            :auto-size="{ minRows: 3, maxRows: 6 }"
+            :max-length="500"
+            show-word-limit
+            :placeholder="$t('workspace.request.reasonPlaceholder')"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -276,6 +385,10 @@
     getDoctorSchedules,
     updateDoctorProfileSelf,
   } from '@/api/doctor-profile';
+  import {
+    createScheduleRequest,
+    ScheduleRequestCreateDTO,
+  } from '@/api/schedule-request';
   import dayjs from 'dayjs';
 
   const { t } = useI18n();
@@ -288,11 +401,60 @@
   const editModalVisible = ref(false);
   const selectedDate = ref(dayjs().format('YYYY-MM-DD'));
   const panelMode = ref<'month' | 'year'>('month');
+  const requestModalVisible = ref(false);
+  const requestSubmitting = ref(false);
+  const requestForm = ref<ScheduleRequestCreateDTO>({
+    doctorUserId: 0,
+    scheduleId: 0,
+    requestType: 1,
+    targetDate: '',
+    targetSlotPeriod: undefined,
+    targetSlotType: undefined,
+    extraSlots: undefined,
+    reason: '',
+  });
+  const selectedScheduleId = ref<number | null>(null);
 
   // 计算当前月份标题
   const currentMonthTitle = computed(() => {
     return dayjs(selectedDate.value).format('YYYY年MM月');
   });
+
+  const slotPeriodMap: Record<number, string> = {
+    1: '上午8:00-8:30',
+    2: '上午8:30-9:00',
+    3: '上午9:00-9:30',
+    4: '上午9:30-10:00',
+    5: '上午10:00-10:30',
+    6: '上午10:30-11:00',
+    7: '下午13:30-14:00',
+    8: '下午14:00-14:30',
+    9: '下午14:30-15:00',
+    10: '下午15:00-15:30',
+    11: '下午15:30-16:00',
+    12: '下午16:00-16:30',
+  };
+
+  const slotTypeOptions = computed(() => [
+    { value: 1, label: t('schedulePage.slotType.normal') },
+    { value: 2, label: t('schedulePage.slotType.expert') },
+    { value: 3, label: t('schedulePage.slotType.special') },
+  ]);
+
+  const requestTypeOptions = computed(() => [
+    { value: 1, label: t('workspace.request.type.shiftChange') },
+    { value: 2, label: t('workspace.request.type.leave') },
+    { value: 3, label: t('workspace.request.type.extraSlot') },
+  ]);
+
+  const scheduleOptions = computed(() =>
+    selectedDateSchedules.value.map((item) => ({
+      value: item.scheduleId,
+      label: `${dayjs(item.scheduleDate).format('MM-DD')} ${getPeriodText(
+        item.slotPeriod
+      )} · ${getSlotTypeText(item.slotType)}`,
+    }))
+  );
 
   // 生成月历数据
   const calendarDays = computed(() => {
@@ -412,23 +574,27 @@
     schedules.value.filter((s) => s.scheduleDate === selectedDate.value)
   );
 
+  const selectedSchedule = computed(() =>
+    schedules.value.find((s) => s.scheduleId === selectedScheduleId.value)
+  );
+
+  watch(selectedSchedule, (value) => {
+    if (value) {
+      requestForm.value.scheduleId = value.scheduleId;
+      requestForm.value.targetDate = value.scheduleDate;
+      requestForm.value.targetSlotPeriod = value.slotPeriod;
+      requestForm.value.targetSlotType = value.slotType;
+    }
+  });
+
   // 获取时段文本
   const getPeriodText = (period: number) => {
-    const slotPeriodMap: Record<number, string> = {
-      1: '上午8:00-8:30',
-      2: '上午8:30-9:00',
-      3: '上午9:00-9:30',
-      4: '上午9:30-10:00',
-      5: '上午10:00-10:30',
-      6: '上午10:30-11:00',
-      7: '下午13:30-14:00',
-      8: '下午14:00-14:30',
-      9: '下午14:30-15:00',
-      10: '下午15:00-15:30',
-      11: '下午15:30-16:00',
-      12: '下午16:00-16:30',
-    };
     return slotPeriodMap[period] || `时段${period}`;
+  };
+
+  const getSlotTypeText = (slotType?: number) => {
+    const found = slotTypeOptions.value.find((item) => item.value === slotType);
+    return found?.label || `#${slotType}`;
   };
 
   // 处理日期选择
@@ -518,7 +684,90 @@
 
   // 申请修改排班(暂时只是个按钮，下次实现功能)
   const handleApplyScheduleChange = () => {
-    Message.info(t('workspace.applyScheduleChangeComingSoon'));
+    if (selectedDateSchedules.value.length === 0) {
+      Message.warning(t('workspace.request.noScheduleForDate'));
+      return;
+    }
+    const defaultSchedule = selectedDateSchedules.value[0];
+    selectedScheduleId.value = defaultSchedule.scheduleId;
+    resetRequestForm(defaultSchedule);
+    requestModalVisible.value = true;
+  };
+
+  const resetRequestForm = (schedule?: DoctorScheduleDTO) => {
+    const baseSchedule = schedule || selectedSchedule.value;
+    requestForm.value = {
+      doctorUserId: userStore.userId,
+      scheduleId: baseSchedule?.scheduleId || 0,
+      requestType: 1,
+      targetDate: baseSchedule?.scheduleDate || selectedDate.value,
+      targetSlotPeriod: baseSchedule?.slotPeriod,
+      targetSlotType: baseSchedule?.slotType,
+      extraSlots: undefined,
+      reason: '',
+    };
+  };
+
+  const handleRequestScheduleChange = (value: number) => {
+    selectedScheduleId.value = value;
+  };
+
+  const validateRequestForm = () => {
+    if (!requestForm.value.scheduleId) {
+      Message.error(t('workspace.request.validate.schedule'));
+      return false;
+    }
+    if (requestForm.value.requestType === 1) {
+      if (!requestForm.value.targetDate) {
+        Message.error(t('workspace.request.validate.targetDate'));
+        return false;
+      }
+      if (
+        !requestForm.value.targetSlotPeriod ||
+        !requestForm.value.targetSlotType
+      ) {
+        Message.error(t('workspace.request.validate.targetSlot'));
+        return false;
+      }
+    }
+    if (requestForm.value.requestType === 2) {
+      if (!requestForm.value.reason) {
+        Message.error(t('workspace.request.validate.reason'));
+        return false;
+      }
+    }
+    if (requestForm.value.requestType === 3) {
+      if (!requestForm.value.extraSlots || requestForm.value.extraSlots < 1) {
+        Message.error(t('workspace.request.validate.extraSlots'));
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleSubmitScheduleRequest = async () => {
+    if (!validateRequestForm()) return;
+    try {
+      requestSubmitting.value = true;
+      const payload: ScheduleRequestCreateDTO = {
+        ...requestForm.value,
+        doctorUserId: userStore.userId,
+        targetDate: requestForm.value.targetDate
+          ? dayjs(requestForm.value.targetDate).format('YYYY-MM-DD')
+          : undefined,
+      };
+      await createScheduleRequest(payload);
+      Message.success(t('workspace.request.submitSuccess'));
+      requestModalVisible.value = false;
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.error('创建排班申请失败:', error);
+      Message.error(
+        error?.response?.data?.msg || t('workspace.request.submitError')
+      );
+    } finally {
+      requestSubmitting.value = false;
+    }
   };
 
   // 初始化加载数据
