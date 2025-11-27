@@ -40,13 +40,13 @@
               <div class="custom-calendar">
                 <!-- 星期标题 -->
                 <div class="calendar-weekdays">
-                  <div class="weekday">周日</div>
                   <div class="weekday">周一</div>
                   <div class="weekday">周二</div>
                   <div class="weekday">周三</div>
                   <div class="weekday">周四</div>
                   <div class="weekday">周五</div>
                   <div class="weekday">周六</div>
+                  <div class="weekday">周日</div>
                 </div>
 
                 <!-- 日期网格 -->
@@ -68,7 +68,10 @@
                         v-for="schedule in getScheduleByDate(day.date)"
                         :key="schedule.scheduleId"
                         class="schedule-item"
-                        :class="`schedule-type-${schedule.slotType}`"
+                        :class="[
+                          `schedule-type-${schedule.slotType}`,
+                          { 'schedule-disabled': schedule.status === 0 },
+                        ]"
                         @click.stop="handleScheduleClick(schedule)"
                       >
                         <div class="schedule-time">{{
@@ -103,7 +106,10 @@
                     v-for="schedule in selectedDateSchedules"
                     :key="schedule.scheduleId"
                     class="side-item"
-                    :class="`schedule-type-${schedule.slotType}`"
+                    :class="[
+                      `schedule-type-${schedule.slotType}`,
+                      { 'schedule-disabled': schedule.status === 0 },
+                    ]"
                     @click="handleScheduleClick(schedule)"
                   >
                     <div class="side-time">
@@ -303,7 +309,12 @@
                 v-model="requestForm.targetDate"
                 style="width: 100%"
                 value-format="YYYY-MM-DD"
-                :disabled-date="(current) => current < dayjs().startOf('day')"
+                :disabled-date="
+                  (current) =>
+                    current
+                      ? current.valueOf() < dayjs().startOf('day').valueOf()
+                      : false
+                "
                 :placeholder="$t('workspace.request.targetDatePlaceholder')"
               />
             </a-form-item>
@@ -413,7 +424,7 @@
     extraSlots: undefined,
     reason: '',
   });
-  const selectedScheduleId = ref<number | null>(null);
+  const selectedScheduleId = ref<number | undefined>(undefined);
 
   // 计算当前月份标题
   const currentMonthTitle = computed(() => {
@@ -461,8 +472,8 @@
     const currentMonth = dayjs(selectedDate.value);
     const firstDay = currentMonth.startOf('month');
 
-    // 获取第一天是星期几 (0=周日)
-    const firstDayOfWeek = firstDay.day();
+    // 获取第一天是星期几 (0=周一)
+    const firstDayOfWeek = (firstDay.day() + 6) % 7;
 
     // 获取上个月需要显示的天数
     const prevMonthDays = firstDayOfWeek;
@@ -673,6 +684,7 @@
 
   // 点击排班时段
   const handleScheduleClick = (schedule: DoctorScheduleDTO) => {
+    if (schedule.status === 0) return;
     router.push({
       name: 'SchedulePatients',
       params: {
@@ -708,8 +720,28 @@
     };
   };
 
-  const handleRequestScheduleChange = (value: number) => {
-    selectedScheduleId.value = value;
+  const handleRequestScheduleChange = (
+    value:
+      | string
+      | number
+      | boolean
+      | Record<string, any>
+      | (string | number | boolean | Record<string, any>)[]
+      | undefined
+  ) => {
+    const parsed =
+      typeof value === 'string' ? Number.parseInt(value, 10) : value;
+    const id =
+      typeof parsed === 'number' && !Number.isNaN(parsed) ? parsed : undefined;
+    selectedScheduleId.value = id;
+    if (typeof selectedScheduleId.value === 'number') {
+      const match = schedules.value.find(
+        (s) => s.scheduleId === selectedScheduleId.value
+      );
+      if (match) {
+        resetRequestForm(match);
+      }
+    }
   };
 
   const validateRequestForm = () => {
@@ -1031,6 +1063,13 @@
                   color: rgb(var(--orange-6));
                 }
 
+                &.schedule-disabled {
+                  cursor: not-allowed;
+                  opacity: 0.6;
+                  pointer-events: none;
+                  box-shadow: none;
+                }
+
                 .schedule-time {
                   font-weight: 500;
                   white-space: nowrap;
@@ -1228,6 +1267,13 @@
             background-color: rgb(var(--orange-1));
             border-color: rgb(var(--orange-3));
             color: rgb(var(--orange-7));
+          }
+
+          &.schedule-disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            pointer-events: none;
+            box-shadow: none;
           }
         }
       }
