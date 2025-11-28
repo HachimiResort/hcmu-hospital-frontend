@@ -64,6 +64,7 @@ export default {
   'schedulePage.button.add': 'Add Schedule',
   'schedulePage.button.batchDelete': 'Batch Delete',
   'schedulePage.button.copySchedule': 'Copy Schedule',
+  'schedulePage.button.importSchedule': 'Import Template',
 
   // Add/Edit Modal
   'schedulePage.modal.addTitle': 'Add Schedule',
@@ -108,6 +109,39 @@ export default {
     'Please select target date',
   'schedulePage.copyModal.form.targetDate.required':
     'Please select target date',
+
+  // Import Schedule Modal
+  'schedulePage.importModal.title': 'Import Schedule Template',
+  'schedulePage.importModal.searchPlaceholder': 'Search template name',
+  'schedulePage.importModal.noTemplates': 'No templates',
+  'schedulePage.importModal.selectTemplateFirst':
+    'Please select a template from the left',
+  'schedulePage.importModal.preview': 'Template Preview',
+  'schedulePage.importModal.period': 'Period',
+  'schedulePage.importModal.tips':
+    'Import a week of schedules from the selected template to the target week. Existing schedules will not be overwritten.',
+  'schedulePage.importModal.form.targetWeek': 'Target Week',
+  'schedulePage.importModal.form.targetWeek.placeholder':
+    'Please select target week',
+  'schedulePage.importModal.form.targetWeek.required':
+    'Please select target week',
+  'schedulePage.importModal.button.import': 'Import',
+  'schedulePage.importModal.weekday.mon': 'Mon',
+  'schedulePage.importModal.weekday.tue': 'Tue',
+  'schedulePage.importModal.weekday.wed': 'Wed',
+  'schedulePage.importModal.weekday.thu': 'Thu',
+  'schedulePage.importModal.weekday.fri': 'Fri',
+  'schedulePage.importModal.weekday.sat': 'Sat',
+  'schedulePage.importModal.weekday.sun': 'Sun',
+  'schedulePage.importModal.slotType.normal': 'Normal',
+  'schedulePage.importModal.slotType.expert': 'Expert',
+  'schedulePage.importModal.slotType.special': 'Special',
+  'schedulePage.importModal.message.fetchError': 'Failed to fetch templates',
+  'schedulePage.importModal.message.requiredField':
+    'Please fill in all required fields',
+  'schedulePage.importModal.message.importSuccess':
+    'Schedule imported successfully',
+  'schedulePage.importModal.message.importError': 'Failed to import schedule',
 
   // Common
   'common.confirm': 'Confirm',
