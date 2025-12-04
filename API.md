@@ -371,7 +371,7 @@
 # 等待队列接口
 
 
-## getWaitlists
+## 获取等待队列列表
 
 
 **接口地址**:`/waitlists`
@@ -386,7 +386,8 @@
 **响应数据类型**:`*/*`
 
 
-**接口描述**:
+**接口描述**:<p>获取等待队列列表</p>
+
 
 
 **请求参数**:
@@ -398,9 +399,8 @@
 |&emsp;&emsp;patientUserId|||false|integer(int64)||
 |&emsp;&emsp;scheduleId|||false|integer(int64)||
 |&emsp;&emsp;status|||false|integer(int32)||
-|&emsp;&emsp;pageNum|||false|integer(int64)||
-|&emsp;&emsp;pageSize|||false|integer(int64)||
-|&emsp;&emsp;isDeleted|||false|integer(int32)||
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
 
 
 **响应状态**:
@@ -453,7 +453,114 @@
 ```
 
 
-## getWaitlistById
+## 创建等待队列
+
+
+**接口地址**:`/waitlists`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>创建等待队列</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "patientUserId": 0,
+  "scheduleId": 0,
+  "status": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|waitlistCreateDTO|WaitlistCreateDTO|body|true|WaitlistCreateDTO|WaitlistCreateDTO|
+|&emsp;&emsp;patientUserId|||true|integer(int64)||
+|&emsp;&emsp;scheduleId|||true|integer(int64)||
+|&emsp;&emsp;status|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultWaitlistFullDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||WaitlistFullDTO|WaitlistFullDTO|
+|&emsp;&emsp;waitlistId||integer(int64)||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"waitlistId": 0,
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"status": 0,
+		"lockExpireTime": "",
+		"notifiedTime": "",
+		"createTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": "",
+		"actualFee": 0
+	}
+}
+```
+
+
+## 获取等待队列详情
 
 
 **接口地址**:`/waitlists/{waitlistId}`
@@ -468,7 +575,8 @@
 **响应数据类型**:`*/*`
 
 
-**接口描述**:
+**接口描述**:<p>获取等待队列详情</p>
+
 
 
 **请求参数**:
@@ -484,7 +592,7 @@
 
 | 状态码 | 说明 | schema |
 | -------- | -------- | ----- | 
-|200|OK|ResultWaitlistDetailDTO|
+|200|OK|ResultWaitlistFullDTO|
 
 
 **响应参数**:
@@ -494,17 +602,25 @@
 | -------- | -------- | ----- |----- | 
 |code||integer(int32)|integer(int32)|
 |msg||string||
-|data||WaitlistDetailDTO|WaitlistDetailDTO|
+|data||WaitlistFullDTO|WaitlistFullDTO|
 |&emsp;&emsp;waitlistId||integer(int64)||
 |&emsp;&emsp;patientUserId||integer(int64)||
 |&emsp;&emsp;scheduleId||integer(int64)||
 |&emsp;&emsp;status||integer(int32)||
-|&emsp;&emsp;notifiedTime||string(date-time)||
 |&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
-|&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
 |&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
 
 
 **响应示例**:
@@ -517,12 +633,435 @@
 		"patientUserId": 0,
 		"scheduleId": 0,
 		"status": 0,
-		"notifiedTime": "",
 		"lockExpireTime": "",
+		"notifiedTime": "",
 		"createTime": "",
-		"updateTime": "",
 		"patientUserName": "",
-		"patientPhone": ""
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": "",
+		"actualFee": 0
+	}
+}
+```
+
+
+## 更新等待队列信息
+
+
+**接口地址**:`/waitlists/{waitlistId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新等待队列信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "status": 0,
+  "notifiedTime": "",
+  "lockExpireTime": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|waitlistId||path|true|integer(int64)||
+|waitlistUpdateDTO|WaitlistUpdateDTO|body|true|WaitlistUpdateDTO|WaitlistUpdateDTO|
+|&emsp;&emsp;status|||false|integer(int32)||
+|&emsp;&emsp;notifiedTime|||false|string(date-time)||
+|&emsp;&emsp;lockExpireTime|||false|string(date-time)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 删除等待队列
+
+
+**接口地址**:`/waitlists/{waitlistId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除等待队列（逻辑删除）</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|waitlistId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 患者取消候补
+
+
+**接口地址**:`/waitlists/{waitlistId}/cancel`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>患者取消候补</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|waitlistId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultWaitlistFullDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||WaitlistFullDTO|WaitlistFullDTO|
+|&emsp;&emsp;waitlistId||integer(int64)||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"waitlistId": 0,
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"status": 0,
+		"lockExpireTime": "",
+		"notifiedTime": "",
+		"createTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": "",
+		"actualFee": 0
+	}
+}
+```
+
+
+## 候补支付
+
+
+**接口地址**:`/waitlists/{waitlistId}/pay`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>候补支付</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|waitlistId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultWaitlistFullDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||WaitlistFullDTO|WaitlistFullDTO|
+|&emsp;&emsp;waitlistId||integer(int64)||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"waitlistId": 0,
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"status": 0,
+		"lockExpireTime": "",
+		"notifiedTime": "",
+		"createTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": "",
+		"actualFee": 0
+	}
+}
+```
+
+
+## 患者加入候补队列
+
+
+**接口地址**:`/waitlists/join`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>患者加入候补队列</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "userId": 0,
+  "scheduleId": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|patientJoinDTO|PatientJoinDTO|body|true|PatientJoinDTO|PatientJoinDTO|
+|&emsp;&emsp;userId|||true|integer(int64)||
+|&emsp;&emsp;scheduleId|||true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultWaitlistFullDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||WaitlistFullDTO|WaitlistFullDTO|
+|&emsp;&emsp;waitlistId||integer(int64)||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"waitlistId": 0,
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"status": 0,
+		"lockExpireTime": "",
+		"notifiedTime": "",
+		"createTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": "",
+		"actualFee": 0
 	}
 }
 ```
@@ -589,8 +1128,12 @@
 |&emsp;&emsp;&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;&emsp;&emsp;paymentTime||string||
+|&emsp;&emsp;&emsp;&emsp;lockExpireTime||string||
 |&emsp;&emsp;&emsp;&emsp;cancellationTime||string||
+|&emsp;&emsp;&emsp;&emsp;callingTime||string||
+|&emsp;&emsp;&emsp;&emsp;completionTime||string||
 |&emsp;&emsp;&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;&emsp;&emsp;checkInTime||string||
 |&emsp;&emsp;&emsp;&emsp;createTime||string||
 |&emsp;&emsp;&emsp;&emsp;updateTime||string||
 |&emsp;&emsp;&emsp;&emsp;patientUserName||string||
@@ -623,8 +1166,12 @@
 				"originalFee": 0,
 				"actualFee": 0,
 				"paymentTime": "",
+				"lockExpireTime": "",
 				"cancellationTime": "",
+				"callingTime": "",
+				"completionTime": "",
 				"cancellationReason": "",
+				"checkInTime": "",
 				"createTime": "",
 				"updateTime": "",
 				"patientUserName": "",
@@ -695,8 +1242,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -726,8 +1277,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -797,8 +1352,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -828,8 +1387,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -911,8 +1474,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -942,8 +1509,134 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
+		"createTime": "",
+		"updateTime": "",
+		"patientUserName": "",
+		"patientPhone": "",
+		"patientName": "",
+		"scheduleDate": "",
+		"slotType": 0,
+		"slotPeriod": 0,
+		"doctorName": "",
+		"doctorTitle": "",
+		"doctorUserId": "",
+		"departmentName": ""
+	}
+}
+```
+
+
+## 预约签到
+
+
+**接口地址**:`/appointments/{appointmentId}/check-in`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>预约签到</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "token": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|appointmentId||path|true|integer(int64)||
+|appointmentCheckInDTO|AppointmentCheckInDTO|body|true|AppointmentCheckInDTO|AppointmentCheckInDTO|
+|&emsp;&emsp;token|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultAppointmentListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||AppointmentListDTO|AppointmentListDTO|
+|&emsp;&emsp;appointmentId||integer(int64)||
+|&emsp;&emsp;appointmentNo||string||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;visitNo||integer(int32)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;originalFee||number||
+|&emsp;&emsp;actualFee||number||
+|&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
+|&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"appointmentId": 0,
+		"appointmentNo": "",
+		"patientUserId": 0,
+		"scheduleId": 0,
+		"visitNo": 0,
+		"status": 0,
+		"originalFee": 0,
+		"actualFee": 0,
+		"paymentTime": "",
+		"lockExpireTime": "",
+		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
+		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -1013,8 +1706,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -1044,8 +1741,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -1115,8 +1816,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -1146,8 +1851,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -1217,8 +1926,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -1248,8 +1961,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -1262,6 +1979,189 @@
 		"doctorTitle": "",
 		"doctorUserId": "",
 		"departmentName": ""
+	}
+}
+```
+
+
+## 生成签到二维码token
+
+
+**接口地址**:`/appointments/check-in/token`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`image/png`
+
+
+**接口描述**:<p>生成签到二维码token</p>
+
+
+
+**请求参数**:
+
+
+暂无
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK||
+
+
+**响应参数**:
+
+
+暂无
+
+
+**响应示例**:
+```javascript
+
+```
+
+
+# 号源大屏接口
+
+
+## 获取号源统计
+
+
+**接口地址**:`/dashboard/appointments/statistics`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取号源统计</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|AppointmentStatisticsDTO|AppointmentStatisticsDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultAppointmentStatisticsVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||AppointmentStatisticsVO|AppointmentStatisticsVO|
+|&emsp;&emsp;pendingPaymentCount||integer(int64)||
+|&emsp;&emsp;bookedCount||integer(int64)||
+|&emsp;&emsp;completedCount||integer(int64)||
+|&emsp;&emsp;cancelledCount||integer(int64)||
+|&emsp;&emsp;noShowCount||integer(int64)||
+|&emsp;&emsp;totalRevenue||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"pendingPaymentCount": 0,
+		"bookedCount": 0,
+		"completedCount": 0,
+		"cancelledCount": 0,
+		"noShowCount": 0,
+		"totalRevenue": 0
+	}
+}
+```
+
+
+## 获取时段-预约量曲线图
+
+
+**接口地址**:`/dashboard/appointments/trend`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取时段-预约量曲线图</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|AppointmentTrendDTO|AppointmentTrendDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultAppointmentTrendVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||AppointmentTrendVO|AppointmentTrendVO|
+|&emsp;&emsp;trendData||array|TrendDataPoint|
+|&emsp;&emsp;&emsp;&emsp;count||integer||
+|&emsp;&emsp;&emsp;&emsp;periodLabel||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"trendData": [
+			{
+				"count": 0,
+				"periodLabel": ""
+			}
+		]
 	}
 }
 ```
@@ -1719,8 +2619,12 @@
 |&emsp;&emsp;&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;&emsp;&emsp;paymentTime||string||
+|&emsp;&emsp;&emsp;&emsp;lockExpireTime||string||
 |&emsp;&emsp;&emsp;&emsp;cancellationTime||string||
+|&emsp;&emsp;&emsp;&emsp;callingTime||string||
+|&emsp;&emsp;&emsp;&emsp;completionTime||string||
 |&emsp;&emsp;&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;&emsp;&emsp;checkInTime||string||
 |&emsp;&emsp;&emsp;&emsp;createTime||string||
 |&emsp;&emsp;&emsp;&emsp;updateTime||string||
 |&emsp;&emsp;&emsp;&emsp;patientUserName||string||
@@ -1753,8 +2657,12 @@
 				"originalFee": 0,
 				"actualFee": 0,
 				"paymentTime": "",
+				"lockExpireTime": "",
 				"cancellationTime": "",
+				"callingTime": "",
+				"completionTime": "",
 				"cancellationReason": "",
+				"checkInTime": "",
 				"createTime": "",
 				"updateTime": "",
 				"patientUserName": "",
@@ -1770,6 +2678,100 @@
 			}
 		]
 	}
+}
+```
+
+
+## 根据用户id查找候补列表('CHECK_WAITLIST')
+
+
+**接口地址**:`/patient-profiles/{userId}/waitlists`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>根据用户id查找候补列表</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|userId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultListWaitlistFullDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||array|WaitlistFullDTO|
+|&emsp;&emsp;waitlistId||integer(int64)||
+|&emsp;&emsp;patientUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
+|&emsp;&emsp;notifiedTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;patientUserName||string||
+|&emsp;&emsp;patientPhone||string||
+|&emsp;&emsp;patientName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;doctorTitle||string||
+|&emsp;&emsp;doctorUserId||string||
+|&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;actualFee||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": [
+		{
+			"waitlistId": 0,
+			"patientUserId": 0,
+			"scheduleId": 0,
+			"status": 0,
+			"lockExpireTime": "",
+			"notifiedTime": "",
+			"createTime": "",
+			"patientUserName": "",
+			"patientPhone": "",
+			"patientName": "",
+			"scheduleDate": "",
+			"slotType": 0,
+			"slotPeriod": 0,
+			"doctorName": "",
+			"doctorTitle": "",
+			"doctorUserId": "",
+			"departmentName": "",
+			"actualFee": 0
+		}
+	]
 }
 ```
 
@@ -2315,7 +3317,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,DOCTOR_MG_PAGE,ADD_DOCTOR,ALT_DOCTOR,CHECK_DOCTOR,PATIENT_MG_PAGE,ADD_PATIENT,ALT_PATIENT,CHECK_PATIENT,SCHEDULE_MG_PAGE,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,APPOINTMENT_MG_PAGE,ADD_APPOINTMENT,ALT_APPOINTMENT,CHECK_APPOINTMENT,RULE_MG_PAGE,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE,TEMPLATE_MG_PAGE,ADD_TEMPLATE,ALT_TEMPLATE,DEL_TEMPLATE,CHECK_TEMPLATE,WAITLIST_MG_PAGE,ADD_WAITLIST,ALT_WAITLIST,DEL_WAITLIST,CHECK_WAITLIST,APPROVE_SCHEDULE_REQUEST|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -2450,7 +3452,7 @@
 |data||array|PermissionListDTO|
 |&emsp;&emsp;name||string||
 |&emsp;&emsp;permissionId||integer(int64)||
-|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,ADD_DOCTOR,ALT_DOCTOR,DEL_DOCTOR,CHECK_DOCTOR,ADD_PATIENT,ALT_PATIENT,DEL_PATIENT,CHECK_PATIENT,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,CHECK_APPOINTMENT,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE|string||
+|&emsp;&emsp;keyValue|可用值:PERSON_MG_PAGE,ADD_MB,DEL_MB,ALT_MB,CHECK_MB,IMPORT_MB,MASTER_ROLE,LOG_PAGE,DEPART_MG_PAGE,ADD_DEPART,DEL_DEPART,ALT_DEPART,CHECK_DEPART,DOCTOR_MG_PAGE,ADD_DOCTOR,ALT_DOCTOR,CHECK_DOCTOR,PATIENT_MG_PAGE,ADD_PATIENT,ALT_PATIENT,CHECK_PATIENT,SCHEDULE_MG_PAGE,ADD_SCHEDULE,ALT_SCHEDULE,DEL_SCHEDULE,CHECK_SCHEDULE,APPOINTMENT_MG_PAGE,ADD_APPOINTMENT,ALT_APPOINTMENT,CHECK_APPOINTMENT,RULE_MG_PAGE,CHECK_RULE,ALT_RULE,DOCTOR_WORK_PAGE,TEMPLATE_MG_PAGE,ADD_TEMPLATE,ALT_TEMPLATE,DEL_TEMPLATE,CHECK_TEMPLATE,WAITLIST_MG_PAGE,ADD_WAITLIST,ALT_WAITLIST,DEL_WAITLIST,CHECK_WAITLIST,APPROVE_SCHEDULE_REQUEST|string||
 |&emsp;&emsp;type||integer(int32)||
 
 
@@ -2467,6 +3469,180 @@
 			"type": 0
 		}
 	]
+}
+```
+
+
+# 科室大屏接口
+
+
+## 获取科室预约排行
+
+
+**接口地址**:`/dashboard/departments/appointment-rank`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取科室预约排行</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|AppointmentRankDTO|AppointmentRankDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+|&emsp;&emsp;limit|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultAppointmentRankVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||AppointmentRankVO|AppointmentRankVO|
+|&emsp;&emsp;rankList||array|AppointmentRankItemVO|
+|&emsp;&emsp;&emsp;&emsp;rank||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;&emsp;&emsp;appointmentCount||integer||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"rankList": [
+			{
+				"rank": 0,
+				"departmentId": 0,
+				"departmentName": "",
+				"appointmentCount": 0
+			}
+		]
+	}
+}
+```
+
+
+## 获取科室负荷统计
+
+
+**接口地址**:`/dashboard/departments/department-load`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取科室负荷统计</p>
+
+
+
+**请求参数**:
+
+
+暂无
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultLoadStatisticsVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||LoadStatisticsVO|LoadStatisticsVO|
+|&emsp;&emsp;totalDepartments||integer(int32)||
+|&emsp;&emsp;highLoadDepartments||integer(int32)||
+|&emsp;&emsp;mediumLoadDepartments||integer(int32)||
+|&emsp;&emsp;lowLoadDepartments||integer(int32)||
+|&emsp;&emsp;idleDepartments||integer(int32)||
+|&emsp;&emsp;highLoadDepartmentList||array|DepartmentInfoVO|
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;mediumLoadDepartmentList||array|DepartmentInfoVO|
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;lowLoadDepartmentList||array|DepartmentInfoVO|
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+|&emsp;&emsp;idleDepartmentList||array|DepartmentInfoVO|
+|&emsp;&emsp;&emsp;&emsp;departmentId||integer||
+|&emsp;&emsp;&emsp;&emsp;departmentName||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"totalDepartments": 0,
+		"highLoadDepartments": 0,
+		"mediumLoadDepartments": 0,
+		"lowLoadDepartments": 0,
+		"idleDepartments": 0,
+		"highLoadDepartmentList": [
+			{
+				"departmentId": 0,
+				"departmentName": ""
+			}
+		],
+		"mediumLoadDepartmentList": [
+			{
+				"departmentId": 0,
+				"departmentName": ""
+			}
+		],
+		"lowLoadDepartmentList": [
+			{
+				"departmentId": 0,
+				"departmentName": ""
+			}
+		],
+		"idleDepartmentList": [
+			{
+				"departmentId": 0,
+				"departmentName": ""
+			}
+		]
+	}
 }
 ```
 
@@ -3440,8 +4616,12 @@
 |&emsp;&emsp;originalFee||number||
 |&emsp;&emsp;actualFee||number||
 |&emsp;&emsp;paymentTime||string(date-time)||
+|&emsp;&emsp;lockExpireTime||string(date-time)||
 |&emsp;&emsp;cancellationTime||string(date-time)||
+|&emsp;&emsp;callingTime||string(date-time)||
+|&emsp;&emsp;completionTime||string(date-time)||
 |&emsp;&emsp;cancellationReason||string||
+|&emsp;&emsp;checkInTime||string(date-time)||
 |&emsp;&emsp;createTime||string(date-time)||
 |&emsp;&emsp;updateTime||string(date-time)||
 |&emsp;&emsp;patientUserName||string||
@@ -3471,8 +4651,12 @@
 		"originalFee": 0,
 		"actualFee": 0,
 		"paymentTime": "",
+		"lockExpireTime": "",
 		"cancellationTime": "",
+		"callingTime": "",
+		"completionTime": "",
 		"cancellationReason": "",
+		"checkInTime": "",
 		"createTime": "",
 		"updateTime": "",
 		"patientUserName": "",
@@ -3591,6 +4775,1307 @@
 |scheduleCopyDTO|ScheduleCopyDTO|body|true|ScheduleCopyDTO|ScheduleCopyDTO|
 |&emsp;&emsp;doctorUserId|||true|integer(int64)||
 |&emsp;&emsp;targetDate|||true|string(date)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+# 排班模板接口
+
+
+## 获取排班模板列表('CHECK_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取排班模板列表</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|TemplateGetRequestDTO|TemplateGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;templateName|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTOTemplateListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTOTemplateListDTO|PageDTOTemplateListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|TemplateListDTO|
+|&emsp;&emsp;&emsp;&emsp;templateId||integer||
+|&emsp;&emsp;&emsp;&emsp;templateName||string||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+|&emsp;&emsp;&emsp;&emsp;updateTime||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"templateId": 0,
+				"templateName": "",
+				"createTime": "",
+				"updateTime": ""
+			}
+		]
+	}
+}
+```
+
+
+## 创建排班模板('ADD_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>创建排班模板</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "templateName": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateCreateDTO|TemplateCreateDTO|body|true|TemplateCreateDTO|TemplateCreateDTO|
+|&emsp;&emsp;templateName|||true|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultTemplateListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||TemplateListDTO|TemplateListDTO|
+|&emsp;&emsp;templateId||integer(int64)||
+|&emsp;&emsp;templateName||string||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"templateId": 0,
+		"templateName": "",
+		"createTime": "",
+		"updateTime": ""
+	}
+}
+```
+
+
+## 获取排班模板详情('CHECK_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取排班模板详情</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultTemplateListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||TemplateListDTO|TemplateListDTO|
+|&emsp;&emsp;templateId||integer(int64)||
+|&emsp;&emsp;templateName||string||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"templateId": 0,
+		"templateName": "",
+		"createTime": "",
+		"updateTime": ""
+	}
+}
+```
+
+
+## 更新排班模板信息('ALT_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新排班模板信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "templateName": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|templateUpdateDTO|TemplateUpdateDTO|body|true|TemplateUpdateDTO|TemplateUpdateDTO|
+|&emsp;&emsp;templateName|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 删除排班模板('DEL_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除排班模板（逻辑删除）</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 获取模板下的排班列表('CHECK_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}/schedules`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取模板下的排班列表</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|requestDTO||query|true|TemplateScheduleGetRequestDTO|TemplateScheduleGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;slotType|||false|integer(int32)||
+|&emsp;&emsp;slotPeriod|||false|integer(int32)||
+|&emsp;&emsp;weekday|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTOTemplateScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTOTemplateScheduleListDTO|PageDTOTemplateScheduleListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|TemplateScheduleListDTO|
+|&emsp;&emsp;&emsp;&emsp;scheduleId||integer||
+|&emsp;&emsp;&emsp;&emsp;templateId||integer||
+|&emsp;&emsp;&emsp;&emsp;slotType||integer||
+|&emsp;&emsp;&emsp;&emsp;totalSlots||integer||
+|&emsp;&emsp;&emsp;&emsp;weekday||integer||
+|&emsp;&emsp;&emsp;&emsp;slotPeriod||integer||
+|&emsp;&emsp;&emsp;&emsp;fee||number||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+|&emsp;&emsp;&emsp;&emsp;updateTime||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"scheduleId": 0,
+				"templateId": 0,
+				"slotType": 0,
+				"totalSlots": 0,
+				"weekday": 0,
+				"slotPeriod": 0,
+				"fee": 0,
+				"createTime": "",
+				"updateTime": ""
+			}
+		]
+	}
+}
+```
+
+
+## 在模板下创建排班('ADD_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}/schedules`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>在模板下创建排班</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "slotType": 0,
+  "totalSlots": 0,
+  "slotPeriod": 0,
+  "fee": 0,
+  "weekday": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|templateScheduleCreateDTO|TemplateScheduleCreateDTO|body|true|TemplateScheduleCreateDTO|TemplateScheduleCreateDTO|
+|&emsp;&emsp;slotType|||true|integer(int32)||
+|&emsp;&emsp;totalSlots|||true|integer(int32)||
+|&emsp;&emsp;slotPeriod|||true|integer(int32)||
+|&emsp;&emsp;fee|||true|number||
+|&emsp;&emsp;weekday|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultTemplateScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||TemplateScheduleListDTO|TemplateScheduleListDTO|
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;templateId||integer(int64)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;totalSlots||integer(int32)||
+|&emsp;&emsp;weekday||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;fee||number||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"scheduleId": 0,
+		"templateId": 0,
+		"slotType": 0,
+		"totalSlots": 0,
+		"weekday": 0,
+		"slotPeriod": 0,
+		"fee": 0,
+		"createTime": "",
+		"updateTime": ""
+	}
+}
+```
+
+
+## 获取模板排班详情('CHECK_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}/schedules/{scheduleId}`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取模板排班详情</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|scheduleId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultTemplateScheduleListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||TemplateScheduleListDTO|TemplateScheduleListDTO|
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;templateId||integer(int64)||
+|&emsp;&emsp;slotType||integer(int32)||
+|&emsp;&emsp;totalSlots||integer(int32)||
+|&emsp;&emsp;weekday||integer(int32)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;fee||number||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"scheduleId": 0,
+		"templateId": 0,
+		"slotType": 0,
+		"totalSlots": 0,
+		"weekday": 0,
+		"slotPeriod": 0,
+		"fee": 0,
+		"createTime": "",
+		"updateTime": ""
+	}
+}
+```
+
+
+## 更新模板排班信息('ALT_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}/schedules/{scheduleId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新模板排班信息</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "slotType": 0,
+  "totalSlots": 0,
+  "slotPeriod": 0,
+  "fee": 0,
+  "weekday": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|scheduleId||path|true|integer(int64)||
+|templateScheduleUpdateDTO|TemplateScheduleUpdateDTO|body|true|TemplateScheduleUpdateDTO|TemplateScheduleUpdateDTO|
+|&emsp;&emsp;slotType|||false|integer(int32)||
+|&emsp;&emsp;totalSlots|||false|integer(int32)||
+|&emsp;&emsp;slotPeriod|||false|integer(int32)||
+|&emsp;&emsp;fee|||false|number||
+|&emsp;&emsp;weekday|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 删除模板排班('DEL_TEMPLATE')
+
+
+**接口地址**:`/schedule-templates/{templateId}/schedules/{scheduleId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除模板排班（逻辑删除）</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|templateId||path|true|integer(int64)||
+|scheduleId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+# 排班申请接口
+
+
+## 获取排班申请列表('CHECK_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取排班申请列表</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|ScheduleRequestGetRequestDTO|ScheduleRequestGetRequestDTO|
+|&emsp;&emsp;pageNum|||false|integer(int32)||
+|&emsp;&emsp;pageSize|||false|integer(int32)||
+|&emsp;&emsp;doctorUserId|||false|integer(int64)||
+|&emsp;&emsp;scheduleId|||false|integer(int64)||
+|&emsp;&emsp;requestType|||false|integer(int32)||
+|&emsp;&emsp;status|||false|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultPageDTOScheduleRequestListDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||PageDTOScheduleRequestListDTO|PageDTOScheduleRequestListDTO|
+|&emsp;&emsp;total||integer(int64)||
+|&emsp;&emsp;list||array|ScheduleRequestListDTO|
+|&emsp;&emsp;&emsp;&emsp;requestId||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;scheduleId||integer||
+|&emsp;&emsp;&emsp;&emsp;requestType||integer||
+|&emsp;&emsp;&emsp;&emsp;status||integer||
+|&emsp;&emsp;&emsp;&emsp;targetDate||string||
+|&emsp;&emsp;&emsp;&emsp;targetSlotPeriod||integer||
+|&emsp;&emsp;&emsp;&emsp;targetSlotType||integer||
+|&emsp;&emsp;&emsp;&emsp;extraSlots||integer||
+|&emsp;&emsp;&emsp;&emsp;reason||string||
+|&emsp;&emsp;&emsp;&emsp;approverUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;approveRemark||string||
+|&emsp;&emsp;&emsp;&emsp;approveTime||string||
+|&emsp;&emsp;&emsp;&emsp;createTime||string||
+|&emsp;&emsp;&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;&emsp;&emsp;scheduleDate||string||
+|&emsp;&emsp;&emsp;&emsp;slotPeriod||integer||
+|&emsp;&emsp;&emsp;&emsp;slotType||integer||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"total": 0,
+		"list": [
+			{
+				"requestId": 0,
+				"doctorUserId": 0,
+				"scheduleId": 0,
+				"requestType": 0,
+				"status": 0,
+				"targetDate": "",
+				"targetSlotPeriod": 0,
+				"targetSlotType": 0,
+				"extraSlots": 0,
+				"reason": "",
+				"approverUserId": 0,
+				"approveRemark": "",
+				"approveTime": "",
+				"createTime": "",
+				"doctorName": "",
+				"scheduleDate": "",
+				"slotPeriod": 0,
+				"slotType": 0
+			}
+		]
+	}
+}
+```
+
+
+## 创建排班申请('ADD_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>创建排班申请</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "doctorUserId": 0,
+  "scheduleId": 0,
+  "requestType": 0,
+  "targetDate": "",
+  "targetSlotPeriod": 0,
+  "targetSlotType": 0,
+  "extraSlots": 0,
+  "reason": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|scheduleRequestCreateDTO|ScheduleRequestCreateDTO|body|true|ScheduleRequestCreateDTO|ScheduleRequestCreateDTO|
+|&emsp;&emsp;doctorUserId|||true|integer(int64)||
+|&emsp;&emsp;scheduleId|||true|integer(int64)||
+|&emsp;&emsp;requestType|||true|integer(int32)||
+|&emsp;&emsp;targetDate|||false|string(date)||
+|&emsp;&emsp;targetSlotPeriod|||false|integer(int32)||
+|&emsp;&emsp;targetSlotType|||false|integer(int32)||
+|&emsp;&emsp;extraSlots|||false|integer(int32)||
+|&emsp;&emsp;reason|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultScheduleRequestDetailDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||ScheduleRequestDetailDTO|ScheduleRequestDetailDTO|
+|&emsp;&emsp;requestId||integer(int64)||
+|&emsp;&emsp;doctorUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;requestType||integer(int32)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;targetDate||string(date)||
+|&emsp;&emsp;targetSlotPeriod||integer(int32)||
+|&emsp;&emsp;targetSlotType||integer(int32)||
+|&emsp;&emsp;extraSlots||integer(int32)||
+|&emsp;&emsp;reason||string||
+|&emsp;&emsp;approverUserId||integer(int64)||
+|&emsp;&emsp;approveRemark||string||
+|&emsp;&emsp;approveTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;slotType||integer(int32)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"requestId": 0,
+		"doctorUserId": 0,
+		"scheduleId": 0,
+		"requestType": 0,
+		"status": 0,
+		"targetDate": "",
+		"targetSlotPeriod": 0,
+		"targetSlotType": 0,
+		"extraSlots": 0,
+		"reason": "",
+		"approverUserId": 0,
+		"approveRemark": "",
+		"approveTime": "",
+		"createTime": "",
+		"updateTime": "",
+		"doctorName": "",
+		"scheduleDate": "",
+		"slotPeriod": 0,
+		"slotType": 0
+	}
+}
+```
+
+
+## 获取排班申请详情('CHECK_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests/{requestId}`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取排班申请详情</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultScheduleRequestDetailDTO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||ScheduleRequestDetailDTO|ScheduleRequestDetailDTO|
+|&emsp;&emsp;requestId||integer(int64)||
+|&emsp;&emsp;doctorUserId||integer(int64)||
+|&emsp;&emsp;scheduleId||integer(int64)||
+|&emsp;&emsp;requestType||integer(int32)||
+|&emsp;&emsp;status||integer(int32)||
+|&emsp;&emsp;targetDate||string(date)||
+|&emsp;&emsp;targetSlotPeriod||integer(int32)||
+|&emsp;&emsp;targetSlotType||integer(int32)||
+|&emsp;&emsp;extraSlots||integer(int32)||
+|&emsp;&emsp;reason||string||
+|&emsp;&emsp;approverUserId||integer(int64)||
+|&emsp;&emsp;approveRemark||string||
+|&emsp;&emsp;approveTime||string(date-time)||
+|&emsp;&emsp;createTime||string(date-time)||
+|&emsp;&emsp;updateTime||string(date-time)||
+|&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;scheduleDate||string(date)||
+|&emsp;&emsp;slotPeriod||integer(int32)||
+|&emsp;&emsp;slotType||integer(int32)||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"requestId": 0,
+		"doctorUserId": 0,
+		"scheduleId": 0,
+		"requestType": 0,
+		"status": 0,
+		"targetDate": "",
+		"targetSlotPeriod": 0,
+		"targetSlotType": 0,
+		"extraSlots": 0,
+		"reason": "",
+		"approverUserId": 0,
+		"approveRemark": "",
+		"approveTime": "",
+		"createTime": "",
+		"updateTime": "",
+		"doctorName": "",
+		"scheduleDate": "",
+		"slotPeriod": 0,
+		"slotType": 0
+	}
+}
+```
+
+
+## 更新排班申请('ALT_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests/{requestId}`
+
+
+**请求方式**:`PUT`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>更新排班申请</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "targetDate": "",
+  "targetSlotPeriod": 0,
+  "targetSlotType": 0,
+  "extraSlots": 0,
+  "reason": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestId||path|true|integer(int64)||
+|scheduleRequestUpdateDTO|ScheduleRequestUpdateDTO|body|true|ScheduleRequestUpdateDTO|ScheduleRequestUpdateDTO|
+|&emsp;&emsp;targetDate|||false|string(date)||
+|&emsp;&emsp;targetSlotPeriod|||false|integer(int32)||
+|&emsp;&emsp;targetSlotType|||false|integer(int32)||
+|&emsp;&emsp;extraSlots|||false|integer(int32)||
+|&emsp;&emsp;reason|||false|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 删除排班申请，（管理员用）('DEL_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests/{requestId}`
+
+
+**请求方式**:`DELETE`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>删除排班申请</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 撤销排班申请
+
+
+**接口地址**:`/schedule-requests/{requestId}/cancel`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>撤销排班申请</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestId||path|true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
+}
+```
+
+
+## 审批排班申请('APPROVE_SCHEDULE_REQUEST')
+
+
+**接口地址**:`/schedule-requests/{requestId}/handle`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>审批排班申请（同意/拒绝）</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "approved": true,
+  "approveRemark": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestId||path|true|integer(int64)||
+|scheduleRequestHandleDTO|ScheduleRequestHandleDTO|body|true|ScheduleRequestHandleDTO|ScheduleRequestHandleDTO|
+|&emsp;&emsp;approved|||true|boolean||
+|&emsp;&emsp;approveRemark|||false|string||
 
 
 **响应状态**:
@@ -3762,6 +6247,229 @@
 	"code": 0,
 	"msg": "",
 	"data": ""
+}
+```
+
+
+# 医生大屏接口
+
+
+## 获取医生预约率统计
+
+
+**接口地址**:`/dashboard/doctors/appointment-rate`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取医生预约率统计</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|DoctorAppointmentRateDTO|DoctorAppointmentRateDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultDoctorAppointmentRateVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||DoctorAppointmentRateVO|DoctorAppointmentRateVO|
+|&emsp;&emsp;rateList||array|DoctorAppointmentRateItemVO|
+|&emsp;&emsp;&emsp;&emsp;doctorUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;&emsp;&emsp;completedCount||integer||
+|&emsp;&emsp;&emsp;&emsp;cancelledCount||integer||
+|&emsp;&emsp;&emsp;&emsp;noShowCount||integer||
+|&emsp;&emsp;&emsp;&emsp;completedRate||number||
+|&emsp;&emsp;&emsp;&emsp;cancelledRate||number||
+|&emsp;&emsp;&emsp;&emsp;noShowRate||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"rateList": [
+			{
+				"doctorUserId": 0,
+				"doctorName": "",
+				"completedCount": 0,
+				"cancelledCount": 0,
+				"noShowCount": 0,
+				"completedRate": 0,
+				"cancelledRate": 0,
+				"noShowRate": 0
+			}
+		]
+	}
+}
+```
+
+
+## 获取医生收入排行
+
+
+**接口地址**:`/dashboard/doctors/income-rank`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取医生收入排行</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|DoctorIncomeRankDTO|DoctorIncomeRankDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+|&emsp;&emsp;limit|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultDoctorIncomeRankVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||DoctorIncomeRankVO|DoctorIncomeRankVO|
+|&emsp;&emsp;rankList||array|DoctorIncomeRankItemVO|
+|&emsp;&emsp;&emsp;&emsp;rank||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;&emsp;&emsp;totalIncome||number||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"rankList": [
+			{
+				"rank": 0,
+				"doctorUserId": 0,
+				"doctorName": "",
+				"totalIncome": 0
+			}
+		]
+	}
+}
+```
+
+
+## 获取医生就诊量排行
+
+
+**接口地址**:`/dashboard/doctors/visit-rank`
+
+
+**请求方式**:`GET`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>获取医生就诊量排行</p>
+
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|requestDTO||query|true|DoctorVisitRankDTO|DoctorVisitRankDTO|
+|&emsp;&emsp;timeRange|可用值:ALL,MONTH,WEEK,DAY||true|string||
+|&emsp;&emsp;limit|||true|integer(int32)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultDoctorVisitRankVO|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||DoctorVisitRankVO|DoctorVisitRankVO|
+|&emsp;&emsp;rankList||array|DoctorVisitRankItemVO|
+|&emsp;&emsp;&emsp;&emsp;rank||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorUserId||integer||
+|&emsp;&emsp;&emsp;&emsp;doctorName||string||
+|&emsp;&emsp;&emsp;&emsp;visitCount||integer||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": {
+		"rankList": [
+			{
+				"rank": 0,
+				"doctorUserId": 0,
+				"doctorName": "",
+				"visitCount": 0
+			}
+		]
+	}
 }
 ```
 
@@ -4241,6 +6949,75 @@
 			}
 		]
 	}
+}
+```
+
+
+## 导入医生周排班('ADD_SCHEDULE')
+
+
+**接口地址**:`/doctor-profiles/{userId}/schedules`
+
+
+**请求方式**:`POST`
+
+
+**请求数据类型**:`application/x-www-form-urlencoded,application/json`
+
+
+**响应数据类型**:`*/*`
+
+
+**接口描述**:<p>指定日期所在周从模板导入七天排班</p>
+
+
+
+**请求示例**:
+
+
+```javascript
+{
+  "scheduleDate": "",
+  "templateId": 0
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |
+| -------- | -------- | ----- | -------- | -------- | ------ |
+|userId||path|true|integer(int64)||
+|doctorScheduleImportDTO|DoctorScheduleImportDTO|body|true|DoctorScheduleImportDTO|DoctorScheduleImportDTO|
+|&emsp;&emsp;scheduleDate|||true|string(date)||
+|&emsp;&emsp;templateId|||true|integer(int64)||
+
+
+**响应状态**:
+
+
+| 状态码 | 说明 | schema |
+| -------- | -------- | ----- | 
+|200|OK|ResultString|
+
+
+**响应参数**:
+
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| -------- | -------- | ----- |----- | 
+|code||integer(int32)|integer(int32)|
+|msg||string||
+|data||string||
+
+
+**响应示例**:
+```javascript
+{
+	"code": 0,
+	"msg": "",
+	"data": ""
 }
 ```
 
