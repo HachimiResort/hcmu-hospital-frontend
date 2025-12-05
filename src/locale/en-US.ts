@@ -57,6 +57,7 @@ export default {
   'menu.doctorWorkspace': 'Doctor Workspace',
   'menu.schedulePatients': 'Schedule Patients Management',
   'menu.scheduleRequestList': 'My Schedule Requests',
+  'menu.dataStatistics': 'Data Statistics Center',
   'menu.display': 'Project display',
   'menu.about': 'About',
 
@@ -87,6 +88,58 @@ export default {
   'workspace.applyScheduleChange': 'Apply for Schedule Change',
   'workspace.applyScheduleChangeComingSoon':
     'Schedule change application feature coming soon',
+
+  // Data Statistics Center
+  'dataStatistics.title': 'Data Statistics Center',
+  'dataStatistics.timeRange.all': 'All',
+  'dataStatistics.timeRange.month': 'This Month',
+  'dataStatistics.timeRange.week': 'This Week',
+  'dataStatistics.timeRange.day': 'Today',
+
+  // Appointment Statistics
+  'dataStatistics.appointment.title': 'Appointment Statistics',
+  'dataStatistics.appointment.pendingPayment': 'Pending Payment',
+  'dataStatistics.appointment.booked': 'Booked',
+  'dataStatistics.appointment.completed': 'Completed',
+  'dataStatistics.appointment.cancelled': 'Cancelled',
+  'dataStatistics.appointment.noShow': 'No Show',
+  'dataStatistics.appointment.totalRevenue': 'Total Revenue',
+  'dataStatistics.appointment.trendTitle': 'Appointment Trend',
+  'dataStatistics.appointment.count': 'Count',
+
+  // Department Statistics
+  'dataStatistics.department.title': 'Department Statistics',
+  'dataStatistics.department.appointmentRank': 'Department Appointment Rank',
+  'dataStatistics.department.rank': 'Rank',
+  'dataStatistics.department.name': 'Department Name',
+  'dataStatistics.department.appointmentCount': 'Appointment Count',
+  'dataStatistics.department.loadTitle': 'Department Load Statistics',
+  'dataStatistics.department.total': 'Total Departments',
+  'dataStatistics.department.highLoad': 'High Load',
+  'dataStatistics.department.mediumLoad': 'Medium Load',
+  'dataStatistics.department.lowLoad': 'Low Load',
+  'dataStatistics.department.idle': 'Idle',
+
+  // Doctor Statistics
+  'dataStatistics.doctor.title': 'Doctor Statistics',
+  'dataStatistics.doctor.appointmentRateTitle': 'Doctor Appointment Rate',
+  'dataStatistics.doctor.name': 'Doctor Name',
+  'dataStatistics.doctor.completedCount': 'Completed',
+  'dataStatistics.doctor.cancelledCount': 'Cancelled',
+  'dataStatistics.doctor.noShowCount': 'No Show',
+  'dataStatistics.doctor.completedRate': 'Completed Rate',
+  'dataStatistics.doctor.cancelledRate': 'Cancelled Rate',
+  'dataStatistics.doctor.noShowRate': 'No Show Rate',
+  'dataStatistics.doctor.incomeRank': 'Doctor Income Rank',
+  'dataStatistics.doctor.income': 'Income',
+  'dataStatistics.doctor.visitRank': 'Doctor Visit Rank',
+  'dataStatistics.doctor.visitCount': 'Visit Count',
+
+  'dataStatistics.loading': 'Loading...',
+  'dataStatistics.loadError': 'Load Failed',
+  'dataStatistics.noData': 'No Data',
+  'dataStatistics.topLimit': 'Top',
+  'dataStatistics.items': 'Items',
 
   ...localeSystem,
   ...localeState,

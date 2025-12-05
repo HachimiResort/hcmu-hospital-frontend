@@ -97,7 +97,7 @@
         />
       </a-form-item>
 
-      <!-- 可用号源数(仅编辑时显示) -->
+      <!-- 剩余号源数(仅编辑时显示，只读) -->
       <a-form-item
         v-if="isEdit"
         field="availableSlots"
@@ -110,6 +110,7 @@
           "
           :min="0"
           :max="form.totalSlots"
+          :disabled="true"
           style="width: 100%"
         />
       </a-form-item>
@@ -134,8 +135,7 @@
           :placeholder="$t('schedulePage.modal.form.status.placeholder')"
         >
           <a-option :value="1" :label="$t('schedulePage.status.open')" />
-          <a-option :value="2" :label="$t('schedulePage.status.full')" />
-          <a-option :value="3" :label="$t('schedulePage.status.closed')" />
+          <a-option :value="0" :label="$t('schedulePage.status.closed')" />
         </a-select>
       </a-form-item>
     </a-form>

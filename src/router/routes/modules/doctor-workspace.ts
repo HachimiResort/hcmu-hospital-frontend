@@ -8,7 +8,8 @@ const DOCTOR_WORKSPACE: AppRouteRecordRaw = {
   redirect: '/doctor-workspace/index',
   meta: {
     locale: 'menu.doctorWorkspace',
-    requiresPerm: false,
+    requiresPerm: true,
+    permission: 'DOCTOR_WORK_PAGE',
     icon: 'icon-dashboard',
     order: 2,
     hideInMenu: false,

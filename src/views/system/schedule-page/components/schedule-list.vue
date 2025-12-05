@@ -103,11 +103,7 @@
                       :label="$t('schedulePage.status.open')"
                     />
                     <a-option
-                      :value="2"
-                      :label="$t('schedulePage.status.full')"
-                    />
-                    <a-option
-                      :value="3"
+                      :value="0"
                       :label="$t('schedulePage.status.closed')"
                     />
                   </a-select>
@@ -243,20 +239,10 @@
           </a-tag>
         </template>
         <template #status="{ record }">
-          <a-tag
-            :color="
-              record.status === 1
-                ? 'green'
-                : record.status === 2
-                ? 'orange'
-                : 'red'
-            "
-          >
+          <a-tag :color="record.status === 1 ? 'green' : 'red'">
             {{
               record.status === 1
                 ? $t('schedulePage.status.open')
-                : record.status === 2
-                ? $t('schedulePage.status.full')
                 : $t('schedulePage.status.closed')
             }}
           </a-tag>
