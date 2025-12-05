@@ -2,6 +2,9 @@
   <div class="data-statistics-container">
     <!-- 时间范围选择器 -->
     <div class="time-range-selector">
+      <a-button type="primary" :loading="exportLoading" @click="handleExport">
+        {{ $t('dataStatistics.export') }}
+      </a-button>
       <a-radio-group
         v-model="timeRange"
         type="button"
@@ -223,11 +226,13 @@
     getDoctorIncomeRank,
     getDoctorVisitRank,
   } from '@/api/dashboard';
+  import { exportDashboardData } from '@/api/common';
 
   const { t } = useI18n();
 
   // 时间范围
   const timeRange = ref<TimeRange>('DAY');
+  const exportLoading = ref(false);
 
   // 加载状态
   const appointmentLoading = ref(false);
@@ -759,6 +764,40 @@
     }
   };
 
+  // 导出数据
+  const handleExport = async () => {
+    exportLoading.value = true;
+    try {
+      const res = await exportDashboardData({
+        timeRange: timeRange.value,
+        rankLimit: Math.max(
+          departmentRankLimit.value,
+          doctorIncomeRankLimit.value,
+          doctorVisitRankLimit.value
+        ),
+      });
+      const url = (res.data || '').toString();
+      if (!url) {
+        throw new Error('empty export url');
+      }
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      Message.success(t('dataStatistics.exportSuccess'));
+    } catch (error) {
+      console.error('导出数据失败:', error);
+      Message.error(t('dataStatistics.exportFailed'));
+    } finally {
+      exportLoading.value = false;
+    }
+  };
+
   // 时间范围变化处理
   const handleTimeRangeChange = () => {
     fetchAppointmentStatistics();
@@ -795,6 +834,8 @@
   .time-range-selector {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 20px;
   }
 

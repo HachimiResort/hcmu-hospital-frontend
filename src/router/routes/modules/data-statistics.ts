@@ -9,7 +9,7 @@ const DATA_STATISTICS: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.dataStatistics',
     requiresPerm: true,
-    permission: 'MASTER_ROLE',
+    permission: 'CHECK_DASHBOARD',
     icon: 'icon-bar-chart',
     order: 3,
     hideInMenu: false,
@@ -23,7 +23,7 @@ const DATA_STATISTICS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.dataStatistics',
         requiresPerm: true,
-        permission: 'MASTER_ROLE',
+        permission: 'CHECK_DASHBOARD',
         activeMenu: 'DataStatistics',
       },
     },

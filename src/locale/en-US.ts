@@ -140,6 +140,9 @@ export default {
   'dataStatistics.noData': 'No Data',
   'dataStatistics.topLimit': 'Top',
   'dataStatistics.items': 'Items',
+  'dataStatistics.export': 'Export Data',
+  'dataStatistics.exportSuccess': 'Export link generated',
+  'dataStatistics.exportFailed': 'Export failed, please try again',
 
   ...localeSystem,
   ...localeState,

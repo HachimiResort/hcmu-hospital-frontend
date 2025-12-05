@@ -138,6 +138,9 @@ export default {
   'dataStatistics.noData': '暂无数据',
   'dataStatistics.topLimit': '显示前',
   'dataStatistics.items': '项',
+  'dataStatistics.export': '导出数据',
+  'dataStatistics.exportSuccess': '数据导出链接生成成功',
+  'dataStatistics.exportFailed': '导出失败，请稍后重试',
 
   ...localeSystem,
   ...localeState,
