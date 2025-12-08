@@ -41,8 +41,7 @@ export default {
   'schedulePage.slotType.special': 'Special',
 
   // Status
-  'schedulePage.status.open': 'Open',
-  'schedulePage.status.full': 'Full',
+  'schedulePage.status.open': 'Receiving Patients',
   'schedulePage.status.closed': 'Closed',
 
   // Table Columns
