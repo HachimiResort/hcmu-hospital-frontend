@@ -10,7 +10,10 @@ export default {
   // Table columns
   'doctorProfilePage.columns.index': 'No.',
   'doctorProfilePage.columns.userName': 'Doctor Name',
+  'doctorProfilePage.columns.name': 'Name',
   'doctorProfilePage.columns.departmentName': 'Department',
+  'doctorProfilePage.columns.roomCode': 'Room Code',
+  'doctorProfilePage.columns.locationName': 'Location',
   'doctorProfilePage.columns.title': 'Title',
   'doctorProfilePage.columns.specialty': 'Specialty',
   'doctorProfilePage.columns.createTime': 'Create Time',
@@ -41,6 +44,9 @@ export default {
     'Please select department',
   'doctorProfilePage.modal.form.departmentId.required':
     'Department is required',
+  'doctorProfilePage.modal.form.locationId': 'Location',
+  'doctorProfilePage.modal.form.locationId.placeholder':
+    'Search by room code or name',
   'doctorProfilePage.modal.form.title': 'Title',
   'doctorProfilePage.modal.form.title.placeholder': 'Please enter title',
   'doctorProfilePage.modal.form.title.required': 'Title is required',

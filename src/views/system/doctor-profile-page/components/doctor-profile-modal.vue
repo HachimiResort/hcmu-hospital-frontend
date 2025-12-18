@@ -28,6 +28,32 @@
         </a-select>
       </a-form-item>
 
+      <!-- 诊室位置 -->
+      <a-form-item
+        field="locationId"
+        :label="$t('doctorProfilePage.modal.form.locationId')"
+      >
+        <a-select
+          v-model="form.locationId"
+          :placeholder="
+            $t('doctorProfilePage.modal.form.locationId.placeholder')
+          "
+          allow-search
+          allow-clear
+          :filter-option="false"
+          @search="handleLocationSearch"
+        >
+          <a-option
+            v-for="point in filteredLocationOptions"
+            :key="point.pointId"
+            :value="point.pointId"
+            :label="getLocationLabel(point)"
+          >
+            {{ getLocationLabel(point) }}
+          </a-option>
+        </a-select>
+      </a-form-item>
+
       <!-- 职称 -->
       <a-form-item
         field="title"
@@ -65,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, watch } from 'vue';
+  import { computed, ref, reactive, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { Message, FormInstance } from '@arco-design/web-vue';
   import {
@@ -74,6 +100,7 @@
     DoctorProfileUpdateDTO,
   } from '@/api/doctor-profile';
   import { getAllDepartments, DepartmentListDTO } from '@/api/department';
+  import { getAllMapPoints, MapPointListDTO } from '@/api/map';
 
   const props = defineProps<{
     visible: boolean;
@@ -91,6 +118,7 @@
   // 表单数据
   const form = reactive<DoctorProfileUpdateDTO>({
     departmentId: undefined,
+    locationId: undefined,
     title: '',
     specialty: '',
     bio: '',
@@ -98,6 +126,19 @@
 
   // 科室选项
   const departmentOptions = ref<DepartmentListDTO[]>([]);
+  const locationOptions = ref<MapPointListDTO[]>([]);
+  const locationSearch = ref('');
+  const filteredLocationOptions = computed(() => {
+    const keyword = locationSearch.value.trim().toLowerCase();
+    if (!keyword) {
+      return locationOptions.value;
+    }
+    return locationOptions.value.filter((point) => {
+      const pointName = point.pointName?.toLowerCase() ?? '';
+      const roomCode = point.roomCode?.toLowerCase() ?? '';
+      return pointName.includes(keyword) || roomCode.includes(keyword);
+    });
+  });
 
   // 表单验证规则
   const rules = {
@@ -128,12 +169,35 @@
     }
   };
 
+  const fetchLocations = async () => {
+    try {
+      const { data } = await getAllMapPoints();
+      locationOptions.value = data.filter((point) => point.type === 1);
+    } catch (err) {
+      // Message.error(t('doctorProfilePage.message.fetchLocationsError'));
+    }
+  };
+
+  const handleLocationSearch = (value: string) => {
+    locationSearch.value = value;
+  };
+
+  const getLocationLabel = (point: MapPointListDTO) => {
+    const roomCode = point.roomCode?.trim();
+    const pointName = point.pointName?.trim();
+    if (roomCode && pointName) {
+      return `${roomCode} - ${pointName}`;
+    }
+    return roomCode || pointName || `#${point.pointId}`;
+  };
+
   // 获取医生档案详情
   const fetchDoctorProfileDetail = async (userId: number) => {
     try {
       const { data } = await getDoctorProfileByUserId(userId);
       console.log('医生档案详情数据:', data);
       form.departmentId = data.departmentId;
+      form.locationId = data.locationId;
       form.title = data.title;
       form.specialty = data.specialty;
       form.bio = data.bio;
@@ -150,9 +214,11 @@
   // 重置表单
   const resetForm = () => {
     form.departmentId = undefined;
+    form.locationId = undefined;
     form.title = '';
     form.specialty = '';
     form.bio = '';
+    locationSearch.value = '';
     formRef.value?.clearValidate();
   };
 
@@ -173,6 +239,7 @@
       if (props.userId) {
         const updateData: DoctorProfileUpdateDTO = {
           departmentId: form.departmentId,
+          locationId: form.locationId,
           title: form.title,
           specialty: form.specialty,
           bio: form.bio,
@@ -197,6 +264,7 @@
     (newVal) => {
       if (newVal) {
         fetchDepartments();
+        fetchLocations();
         if (props.userId) {
           fetchDoctorProfileDetail(props.userId);
         }
