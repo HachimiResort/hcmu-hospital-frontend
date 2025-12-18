@@ -84,3 +84,12 @@ export function completeAppointment(appointmentId: number) {
 export function noShowAppointment(appointmentId: number) {
   return axios.put<string>(`${base}/${appointmentId}/no-show`);
 }
+
+/**
+ * 获取签到码
+ */
+export function getCheckInCode(locationId: number) {
+  return axios.get<Blob>(`${base}/check-in/token?locationId=${locationId}`, {
+    responseType: 'blob',
+  });
+}

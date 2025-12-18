@@ -74,6 +74,16 @@ const MEDICAL: AppRouteRecordRaw = {
       },
     },
     {
+      path: 'map-page',
+      name: 'MedicalMapPage',
+      component: () => import('@/views/medical/map-page/index.vue'),
+      meta: {
+        locale: 'menu.medical.mapPage',
+        requiresPerm: true,
+        permission: 'TEMPLATE_MG_PAGE',
+      },
+    },
+    {
       path: 'schedule-request-approval',
       name: 'ScheduleRequestApprovalPage',
       component: () =>

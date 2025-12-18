@@ -40,8 +40,12 @@ axios.interceptors.request.use(
 // add response interceptors
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
-    // 如果是文件则放行
-    if (response.headers['content-type'] === 'application/pdf') {
+    // 文件或二进制数据直接放行
+    if (
+      response.headers['content-type'] === 'application/pdf' ||
+      response.config.responseType === 'blob' ||
+      response.data instanceof Blob
+    ) {
       return response;
     }
     const res = response.data;

@@ -9,6 +9,7 @@ import localeDoctorWorkspace from '@/views/doctor-workspace/locale/en-US';
 
 import localePersonnel from '@/views/personnel/locale/en-US';
 import localeSystem from '@/views/system/locale/en-US';
+import localeMapPage from '@/views/medical/map-page/locale/en-US';
 import localeState from '@/utils/state/locale/en-US';
 import localeSettings from './en-US/settings';
 
@@ -54,6 +55,7 @@ export default {
   'menu.medical.patientProfilePage': 'Patient Profile Management',
   'menu.medical.schedulePage': 'Doctor Schedule Management',
   'menu.medical.scheduleTemplatePage': 'Schedule Template Management',
+  'menu.medical.mapPage': 'Hospital Map Management',
   'menu.doctorWorkspace': 'Doctor Workspace',
   'menu.schedulePatients': 'Schedule Patients Management',
   'menu.scheduleRequestList': 'My Schedule Requests',
@@ -155,4 +157,5 @@ export default {
   ...localePersonnel,
   ...localeLogPage,
   ...localeDoctorWorkspace,
+  ...localeMapPage,
 };
