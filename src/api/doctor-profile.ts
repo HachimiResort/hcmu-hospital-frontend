@@ -8,7 +8,11 @@ export interface DoctorProfileListDTO {
   doctorProfileId: number;
   userId: number;
   userName: string;
+  name: string;
   departmentId: number;
+  locationId: number;
+  roomCode: string;
+  locationName: string;
   departmentName: string;
   title: string;
   specialty: string;
@@ -22,6 +26,9 @@ export interface DoctorProfileDetailDTO {
   userName: string;
   name: string;
   departmentId: number;
+  locationId: number;
+  roomCode: string;
+  locationName: string;
   departmentName: string;
   title: string;
   specialty: string;
@@ -44,6 +51,7 @@ export interface DoctorProfileGetRequestDTO {
 export interface DoctorProfileCreateDTO {
   userId?: number;
   departmentId?: number;
+  locationId?: number;
   title?: string;
   specialty?: string;
   bio?: string;
@@ -52,6 +60,7 @@ export interface DoctorProfileCreateDTO {
 // 更新医生档案参数
 export interface DoctorProfileUpdateDTO {
   departmentId?: number;
+  locationId?: number;
   title?: string;
   specialty?: string;
   bio?: string;

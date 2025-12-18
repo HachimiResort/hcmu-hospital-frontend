@@ -205,8 +205,20 @@
       dataIndex: 'userName',
     },
     {
+      title: t('doctorProfilePage.columns.name'),
+      dataIndex: 'name',
+    },
+    {
       title: t('doctorProfilePage.columns.departmentName'),
       dataIndex: 'departmentName',
+    },
+    {
+      title: t('doctorProfilePage.columns.roomCode'),
+      dataIndex: 'roomCode',
+    },
+    {
+      title: t('doctorProfilePage.columns.locationName'),
+      dataIndex: 'locationName',
     },
     {
       title: t('doctorProfilePage.columns.title'),

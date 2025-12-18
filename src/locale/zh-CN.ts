@@ -9,6 +9,7 @@ import localeLogPage from '@/views/logPage/log-page/locale/zh-CN';
 import localeDoctorWorkspace from '@/views/doctor-workspace/locale/zh-CN';
 
 import localeSystem from '@/views/system/locale/zh-CN';
+import localeMapPage from '@/views/medical/map-page/locale/zh-CN';
 import localeState from '@/utils/state/locale/zh-CN';
 import localeSettings from './zh-CN/settings';
 
@@ -54,6 +55,7 @@ export default {
   'menu.medical.patientProfilePage': '患者档案管理',
   'menu.medical.schedulePage': '医生排班管理',
   'menu.medical.scheduleTemplatePage': '排班模板管理',
+  'menu.medical.mapPage': '医院地图管理',
   'menu.doctorWorkspace': '医生工作台',
   'menu.schedulePatients': '时段患者管理',
   'menu.scheduleRequestList': '我的排班申请',
@@ -153,4 +155,5 @@ export default {
   ...localePersonnel,
   ...localeLogPage,
   ...localeDoctorWorkspace,
+  ...localeMapPage,
 };

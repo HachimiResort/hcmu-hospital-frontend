@@ -10,7 +10,10 @@ export default {
   // 表格列
   'doctorProfilePage.columns.index': '序号',
   'doctorProfilePage.columns.userName': '医生姓名',
+  'doctorProfilePage.columns.name': '姓名',
   'doctorProfilePage.columns.departmentName': '所属科室',
+  'doctorProfilePage.columns.roomCode': '房间号',
+  'doctorProfilePage.columns.locationName': '诊室位置',
   'doctorProfilePage.columns.title': '职称',
   'doctorProfilePage.columns.specialty': '专长',
   'doctorProfilePage.columns.createTime': '创建时间',
@@ -39,6 +42,9 @@ export default {
   'doctorProfilePage.modal.form.departmentId': '所属科室',
   'doctorProfilePage.modal.form.departmentId.placeholder': '请选择科室',
   'doctorProfilePage.modal.form.departmentId.required': '请选择所属科室',
+  'doctorProfilePage.modal.form.locationId': '诊室位置',
+  'doctorProfilePage.modal.form.locationId.placeholder':
+    '输入房间号或房间名称检索',
   'doctorProfilePage.modal.form.title': '职称',
   'doctorProfilePage.modal.form.title.placeholder': '请输入职称',
   'doctorProfilePage.modal.form.title.required': '请输入职称',
