@@ -3,6 +3,7 @@ export interface TagProps {
   name: string;
   fullPath: string;
   query?: any;
+  params?: Record<string, unknown>;
   ignoreCache?: boolean;
 }
 
