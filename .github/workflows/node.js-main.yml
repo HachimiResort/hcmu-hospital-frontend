@@ -40,9 +40,9 @@ jobs:
       # 执行打包命令
     - name: 设置项目API地址
       run: |
-          if [ -n "${{ secrets.API_HOST }}" ]; then
+          if [ -n "${{ secrets.VITE_API_BASE_URL }}" ]; then
             # 使用设置中的接口地址
-            echo -e "\nVITE_API_BASE_URL='${{ secrets.API_HOST }}:${{ env.API_PORT }}'" >> .env.production
+            echo -e "\nVITE_API_BASE_URL='${{ secrets.VITE_API_BASE_URL }}'" >> .env.production
           fi
           
     - name: 打包项目
