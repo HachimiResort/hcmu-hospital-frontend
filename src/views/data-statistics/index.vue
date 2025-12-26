@@ -212,7 +212,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed, onMounted } from 'vue';
+  import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
   import { Message } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
   import Chart from '@/components/chart/index.vue';
@@ -819,8 +819,17 @@
     fetchDoctorAppointmentRate();
   };
 
+  let refreshTimer: ReturnType<typeof setInterval> | null = null;
+
   onMounted(() => {
     loadAllData();
+    refreshTimer = setInterval(loadAllData, 5000);
+  });
+
+  onUnmounted(() => {
+    if (refreshTimer) {
+      clearInterval(refreshTimer);
+    }
   });
 </script>
 
