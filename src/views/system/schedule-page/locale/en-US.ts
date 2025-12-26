@@ -63,6 +63,7 @@ export default {
   'schedulePage.button.add': 'Add Schedule',
   'schedulePage.button.batchDelete': 'Batch Delete',
   'schedulePage.button.copySchedule': 'Copy Schedule',
+  'schedulePage.button.viewPatients': 'View Patients',
   'schedulePage.button.importSchedule': 'Import Template',
 
   // Add/Edit Modal
