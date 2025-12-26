@@ -85,9 +85,10 @@
                 :key="patient.userId"
                 class="patient-item"
                 :class="{
-                  active: selectedPatientId === patient.userId,
-                  disabled: getPatientStatus(patient.userId) === 1,
+                  'active': selectedPatientId === patient.userId,
+                  'disabled': getPatientStatus(patient.userId) === 1,
                   [`status-${getStatusClass(patient.userId)}`]: true,
+                  'checked-in': isCheckedIn(patient.userId),
                 }"
                 @click="handleSelectPatient(patient.userId)"
               >
@@ -95,6 +96,14 @@
                   <div class="patient-name">
                     <span class="status-indicator"></span>
                     {{ patient.name }}
+                    <a-tag
+                      v-if="isCheckedIn(patient.userId)"
+                      size="small"
+                      color="green"
+                      class="check-in-tag"
+                    >
+                      {{ $t('schedulePatients.checkedIn') }}
+                    </a-tag>
                   </div>
                   <div class="patient-details">
                     <span>{{ patient.sex }}</span>
@@ -320,6 +329,7 @@
   const currentAppointmentId = ref<number>();
 
   const patientStatusMap = ref<PatientStatusMap>(new Map());
+  const patientCheckInMap = ref<Map<number, boolean>>(new Map());
 
   const callLoading = ref(false);
   const completeLoading = ref(false);
@@ -349,6 +359,11 @@
     patientStatusMap.value.set(userIdValue, status);
     // trigger reactivity for Map
     patientStatusMap.value = new Map(patientStatusMap.value);
+  };
+
+  const setPatientCheckIn = (userIdValue: number, checkedIn: boolean) => {
+    patientCheckInMap.value.set(userIdValue, checkedIn);
+    patientCheckInMap.value = new Map(patientCheckInMap.value);
   };
 
   const handleRequestError = (err: any, fallbackKey: string) => {
@@ -413,16 +428,19 @@
     if (!appointment) {
       appointmentStatus.value = undefined;
       currentAppointmentId.value = undefined;
+      setPatientCheckIn(patientUserId, false);
       return;
     }
 
     appointmentStatus.value = appointment.status as AppointmentStatus;
     currentAppointmentId.value = appointment.appointmentId;
     setPatientStatus(patientUserId, appointment.status as AppointmentStatus);
+    setPatientCheckIn(patientUserId, Boolean(appointment.checkInTime));
   };
 
   const fetchAllPatientsStatus = async () => {
     patientStatusMap.value = new Map();
+    patientCheckInMap.value = new Map();
 
     const statusPromises = patients.value.map(async (patient) => {
       try {
@@ -431,8 +449,13 @@
           ? {
               userId: patient.userId,
               status: appointment.status as AppointmentStatus,
+              checkedIn: Boolean(appointment.checkInTime),
             }
-          : null;
+          : {
+              userId: patient.userId,
+              status: undefined,
+              checkedIn: false,
+            };
       } catch (err) {
         return null;
       }
@@ -442,7 +465,9 @@
 
     results.forEach((result) => {
       if (result.status === 'fulfilled' && result.value) {
-        setPatientStatus(result.value.userId, result.value.status);
+        const { userId: patientUserId, status, checkedIn } = result.value;
+        setPatientStatus(patientUserId, status);
+        setPatientCheckIn(patientUserId, checkedIn);
       }
     });
 
@@ -493,6 +518,10 @@
     patientUserId: number
   ): AppointmentStatus | undefined => {
     return patientStatusMap.value.get(patientUserId);
+  };
+
+  const isCheckedIn = (patientUserId: number): boolean => {
+    return patientCheckInMap.value.get(patientUserId) || false;
   };
 
   // 获取患者状态对应的样式类名
@@ -717,6 +746,10 @@
         border-left-color: rgb(var(--red-6));
       }
 
+      &.checked-in {
+        box-shadow: 0 0 0 1px rgba(var(--green-6), 0.5);
+      }
+
       .patient-info {
         width: 100%;
 
@@ -742,6 +775,11 @@
           color: var(--color-text-3);
         }
       }
+    }
+
+    .check-in-tag {
+      margin-left: 4px;
+      border-radius: 10px;
     }
 
     // 状态指示器颜色

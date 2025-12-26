@@ -10,6 +10,7 @@ export default {
   'schedulePatients.emergencyContactPhone': 'Emergency Contact Phone',
   'schedulePatients.medicalHistory': 'Medical History',
   'schedulePatients.allergyHistory': 'Allergy History',
+  'schedulePatients.checkedIn': 'Checked In',
 
   // Status Legend
   'schedulePatients.legend.unpaid': 'Unpaid',

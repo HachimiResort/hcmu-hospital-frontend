@@ -10,6 +10,7 @@ export default {
   'schedulePatients.emergencyContactPhone': '紧急联系电话',
   'schedulePatients.medicalHistory': '既往病史',
   'schedulePatients.allergyHistory': '过敏史',
+  'schedulePatients.checkedIn': '已签到',
 
   // 状态图例
   'schedulePatients.legend.unpaid': '未支付',
