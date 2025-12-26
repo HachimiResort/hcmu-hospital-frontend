@@ -11,6 +11,7 @@ export interface AppointmentListDTO {
   patientName?: string;
   registrationFee: number;
   status: number;
+  checkInTime?: string;
   createTime?: string;
   updateTime?: string;
 }

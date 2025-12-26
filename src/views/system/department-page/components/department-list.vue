@@ -114,6 +114,7 @@
         :size="size"
         :row-selection="rowSelection"
         @page-change="onPageChange"
+        @page-size-change="onPageSizeChange"
       >
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -304,6 +305,13 @@
   // 分页改变
   const onPageChange = (current: number) => {
     pagination.current = current;
+    fetchData();
+  };
+
+  // 每页条数改变
+  const onPageSizeChange = (pageSize: number) => {
+    pagination.pageSize = pageSize;
+    pagination.current = 1; // 重置到第一页
     fetchData();
   };
 

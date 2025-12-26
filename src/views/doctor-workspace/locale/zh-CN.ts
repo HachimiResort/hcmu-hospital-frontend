@@ -10,6 +10,7 @@ export default {
   'schedulePatients.emergencyContactPhone': '紧急联系电话',
   'schedulePatients.medicalHistory': '既往病史',
   'schedulePatients.allergyHistory': '过敏史',
+  'schedulePatients.checkedIn': '已签到',
 
   // 状态图例
   'schedulePatients.legend.unpaid': '未支付',
@@ -46,6 +47,11 @@ export default {
   'schedulePatients.message.completeError': '操作失败',
   'schedulePatients.message.noShowSuccess': '已标记为爽约',
   'schedulePatients.message.noShowError': '操作失败',
+  'schedulePatients.message.searchPatientError': '搜索患者失败',
+  'schedulePatients.message.emergencyAppointSuccess': '已为患者紧急预约该排班',
+  'schedulePatients.message.emergencyAppointError': '紧急预约失败',
+  'schedulePatients.emergency.placeholder': '输入姓名/用户名/学工号搜索患者',
+  'schedulePatients.actions.emergencyAppoint': '紧急安排',
 
   'workspace.noSchedule': '您今天没有排班安排',
   'workspace.request.title': '申请修改排班',

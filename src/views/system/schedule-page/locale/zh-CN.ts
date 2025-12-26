@@ -61,6 +61,7 @@ export default {
   'schedulePage.button.add': '新增排班',
   'schedulePage.button.batchDelete': '批量删除',
   'schedulePage.button.copySchedule': '复制排班',
+  'schedulePage.button.viewPatients': '查看患者',
   'schedulePage.button.importSchedule': '导入排班模板',
 
   // 新增/编辑弹窗

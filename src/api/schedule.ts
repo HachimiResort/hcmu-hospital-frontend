@@ -133,3 +133,17 @@ export function batchDeleteSchedules(scheduleIds: number[]) {
 export function copySchedule(params: ScheduleCopyDTO) {
   return axios.post<string>(`${base}/copy`, params);
 }
+
+/**
+ * 紧急为患者预约排班号源
+ * @param scheduleId 排班ID
+ * @param patientUserId 患者用户ID
+ */
+export function emergencyAppointSchedule(
+  scheduleId: number,
+  patientUserId: number
+) {
+  return axios.post(`${base}/${scheduleId}/emergency-appoint/`, null, {
+    params: { patientUserId },
+  });
+}

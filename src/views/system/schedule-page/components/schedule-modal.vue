@@ -139,6 +139,18 @@
         </a-select>
       </a-form-item>
     </a-form>
+
+    <template #footer>
+      <a-space>
+        <a-button @click="handleCancel">{{ $t('common.cancel') }}</a-button>
+        <a-button v-if="isEdit" type="outline" @click="handleViewPatients">
+          {{ $t('schedulePage.button.viewPatients') }}
+        </a-button>
+        <a-button type="primary" @click="handleOk">{{
+          $t('common.confirm')
+        }}</a-button>
+      </a-space>
+    </template>
   </a-modal>
 </template>
 
@@ -146,6 +158,7 @@
   import { ref, reactive, watch, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { Message, FormInstance } from '@arco-design/web-vue';
+  import { useRouter } from 'vue-router';
   import dayjs from 'dayjs';
   import {
     createSchedule,
@@ -174,6 +187,7 @@
 
   const { t } = useI18n();
   const formRef = ref<FormInstance>();
+  const router = useRouter();
 
   // 是否为编辑模式
   const isEdit = computed(() => !!props.scheduleId);
@@ -342,6 +356,21 @@
       );
       return false;
     }
+  };
+
+  // 查看排班患者
+  const handleViewPatients = () => {
+    if (!props.scheduleId || !form.doctorUserId) {
+      Message.warning(t('schedulePage.message.fetchDetailError'));
+      return;
+    }
+    router.push({
+      name: 'SchedulePatients',
+      params: {
+        scheduleId: props.scheduleId,
+        userId: form.doctorUserId,
+      },
+    });
   };
 
   // 监听弹窗打开

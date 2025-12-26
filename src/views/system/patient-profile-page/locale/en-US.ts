@@ -5,8 +5,13 @@ export default {
   'patientProfilePage.form.identityType': 'Identity Type',
   'patientProfilePage.form.identityType.placeholder':
     'Please select identity type',
+  'patientProfilePage.form.userName': 'User Name',
+  'patientProfilePage.form.userName.placeholder': 'Please enter user name',
   'patientProfilePage.form.name': 'Name',
   'patientProfilePage.form.name.placeholder': 'Please enter name',
+  'patientProfilePage.form.studentTeacherId': 'Student/Staff ID',
+  'patientProfilePage.form.studentTeacherId.placeholder':
+    'Please enter student/staff ID',
 
   // Table columns
   'patientProfilePage.columns.index': 'No.',

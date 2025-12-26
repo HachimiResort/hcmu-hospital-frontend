@@ -116,6 +116,18 @@
                   ¥{{ getSchedule(day.date, period.value)!.fee }}
                 </div>
                 <div class="schedule-actions">
+                  <!--
+                    <a-button
+                      type="text"
+                      size="mini"
+                      @click.stop="
+                        handleViewPatients(getSchedule(day.date, period.value)!)
+                      "
+                    >
+                      <icon-eye />
+                      {{ $t('schedulePage.button.viewPatients') }}
+                    </a-button>
+                  -->
                   <a-button
                     type="text"
                     size="mini"
@@ -183,6 +195,7 @@
   import { Message, Modal } from '@arco-design/web-vue';
   import dayjs, { Dayjs } from 'dayjs';
   import isoWeek from 'dayjs/plugin/isoWeek';
+  import { useRouter } from 'vue-router';
   import useLoading from '@/hooks/loading';
   import {
     getAllSchedules,
@@ -197,6 +210,7 @@
 
   const { t } = useI18n();
   const { loading, setLoading } = useLoading(false);
+  const router = useRouter();
 
   const props = defineProps({
     selectedDoctorId: {
@@ -384,6 +398,17 @@
         } catch (err) {
           Message.error(t('schedulePage.message.deleteError'));
         }
+      },
+    });
+  };
+
+  // 查看排班患者
+  const handleViewPatients = (schedule: ScheduleListDTO) => {
+    router.push({
+      name: 'SchedulePatients',
+      params: {
+        scheduleId: schedule.scheduleId,
+        userId: schedule.doctorUserId,
       },
     });
   };

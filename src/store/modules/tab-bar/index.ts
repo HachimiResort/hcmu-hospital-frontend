@@ -1,4 +1,7 @@
-import type { RouteLocationNormalized } from 'vue-router';
+import type {
+  RouteLocationNormalized,
+  RouteParamsRawGeneric,
+} from 'vue-router';
 import { defineStore } from 'pinia';
 import {
   DEFAULT_ROUTE,
@@ -9,12 +12,13 @@ import { isString } from '@/utils/is';
 import { TabBarState, TagProps } from './types';
 
 const formatTag = (route: RouteLocationNormalized): TagProps => {
-  const { name, meta, fullPath, query } = route;
+  const { name, meta, fullPath, query, params } = route;
   return {
     title: meta.locale || '',
     name: String(name),
     fullPath,
     query,
+    params: params as RouteParamsRawGeneric,
     ignoreCache: meta.ignoreCache,
   };
 };

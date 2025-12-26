@@ -4,8 +4,12 @@ export default {
   // 表单
   'patientProfilePage.form.identityType': '身份类型',
   'patientProfilePage.form.identityType.placeholder': '请选择身份类型',
+  'patientProfilePage.form.userName': '用户名',
+  'patientProfilePage.form.userName.placeholder': '请输入用户名',
   'patientProfilePage.form.name': '姓名',
   'patientProfilePage.form.name.placeholder': '请输入姓名',
+  'patientProfilePage.form.studentTeacherId': '学号/工号',
+  'patientProfilePage.form.studentTeacherId.placeholder': '请输入学号/工号',
 
   // 表格列
   'patientProfilePage.columns.index': '序号',

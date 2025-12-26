@@ -29,6 +29,19 @@
               </a-col>
               <a-col :span="12">
                 <a-form-item
+                  field="userName"
+                  :label="$t('patientProfilePage.form.userName')"
+                >
+                  <a-input
+                    v-model="formModel.userName"
+                    :placeholder="
+                      $t('patientProfilePage.form.userName.placeholder')
+                    "
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
                   field="name"
                   :label="$t('patientProfilePage.form.name')"
                 >
@@ -36,6 +49,19 @@
                     v-model="formModel.name"
                     :placeholder="
                       $t('patientProfilePage.form.name.placeholder')
+                    "
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  field="studentTeacherId"
+                  :label="$t('patientProfilePage.form.studentTeacherId')"
+                >
+                  <a-input
+                    v-model="formModel.studentTeacherId"
+                    :placeholder="
+                      $t('patientProfilePage.form.studentTeacherId.placeholder')
                     "
                   />
                 </a-form-item>
@@ -105,6 +131,7 @@
         :bordered="false"
         :size="size"
         @page-change="onPageChange"
+        @page-size-change="onPageSizeChange"
       >
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -156,7 +183,9 @@
   // 表单数据
   const formModel = reactive<any>({
     identityType: undefined,
+    userName: '',
     name: '',
+    studentTeacherId: '',
     pageNum: 1,
     pageSize: 10,
   });
@@ -263,13 +292,22 @@
   // 重置
   const reset = () => {
     formModel.identityType = undefined;
+    (formModel as any).userName = '';
     (formModel as any).name = '';
+    (formModel as any).studentTeacherId = '';
     search();
   };
 
   // 分页改变
   const onPageChange = (current: number) => {
     pagination.current = current;
+    fetchData();
+  };
+
+  // 每页条数改变
+  const onPageSizeChange = (pageSize: number) => {
+    pagination.pageSize = pageSize;
+    pagination.current = 1; // 重置到第一页
     fetchData();
   };
 
