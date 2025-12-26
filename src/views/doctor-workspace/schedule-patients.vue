@@ -4,6 +4,46 @@
       <!-- 左侧患者列表 -->
       <a-col :span="8">
         <a-card :title="$t('schedulePatients.patientList')" :bordered="false">
+          <div class="emergency-appoint">
+            <a-select
+              v-model="emergencySelectedPatientId"
+              allow-search
+              :filter-option="false"
+              :loading="emergencySearchLoading"
+              :placeholder="$t('schedulePatients.emergency.placeholder')"
+              :options="[]"
+              @search="handleSearchPatients"
+            >
+              <a-option
+                v-for="option in emergencyPatientOptions"
+                :key="option.userId"
+                :value="option.userId"
+              >
+                <div class="patient-option">
+                  <div class="patient-option__name">
+                    {{ option.name || '-' }}
+                    <span class="patient-option__username">
+                      ({{ option.userName || '-' }})
+                    </span>
+                  </div>
+                  <div class="patient-option__meta">
+                    ID: {{ option.userId }} ·
+                    {{ getIdentityTypeText(option.identityType) }}
+                  </div>
+                </div>
+              </a-option>
+            </a-select>
+            <a-button
+              type="primary"
+              size="small"
+              :loading="emergencyAppointLoading"
+              :disabled="!emergencySelectedPatientId"
+              @click="handleEmergencyAppoint"
+            >
+              {{ $t('schedulePatients.actions.emergencyAppoint') }}
+            </a-button>
+          </div>
+
           <!-- 状态图例 -->
           <div class="status-legend">
             <div class="legend-item">
@@ -231,6 +271,8 @@
   import { getSchedulePatients } from '@/api/doctor-profile';
   import type { SchedulePatientDTO } from '@/api/doctor-profile';
   import {
+    getPatientProfiles,
+    type PatientProfileListDTO,
     getPatientProfileByUserId,
     type PatientProfileDetailDTO,
   } from '@/api/patient-profile';
@@ -240,6 +282,7 @@
     completeAppointment,
     noShowAppointment,
   } from '@/api/appointment';
+  import { emergencyAppointSchedule } from '@/api/schedule';
 
   const APPOINTMENT_STATUS = {
     Unpaid: 1,
@@ -268,6 +311,11 @@
   const patientDetail = ref<PatientProfileDetailDTO>();
   const detailLoading = ref(false);
 
+  const emergencyPatientOptions = ref<PatientProfileListDTO[]>([]);
+  const emergencySelectedPatientId = ref<number>();
+  const emergencySearchLoading = ref(false);
+  const emergencyAppointLoading = ref(false);
+
   const appointmentStatus = ref<AppointmentStatus>();
   const currentAppointmentId = ref<number>();
 
@@ -281,6 +329,7 @@
     1: t('schedulePatients.identityTypes.student'),
     2: t('schedulePatients.identityTypes.teacher'),
     3: t('schedulePatients.identityTypes.other'),
+    0: t('schedulePatients.identityTypes.other'),
   };
 
   const STATUS_CLASS_MAP: Partial<Record<AppointmentStatus, string>> = {
@@ -312,6 +361,37 @@
         patientStatusMap.value.get(patient.userId) !==
         APPOINTMENT_STATUS.Cancelled
     );
+  };
+
+  const handleSearchPatients = async (keyword: string) => {
+    if (!keyword) {
+      emergencyPatientOptions.value = [];
+      return;
+    }
+
+    try {
+      emergencySearchLoading.value = true;
+      const responses = await Promise.all([
+        getPatientProfiles({ pageNum: 1, pageSize: 20, name: keyword }),
+        getPatientProfiles({ pageNum: 1, pageSize: 20, userName: keyword }),
+        getPatientProfiles({
+          pageNum: 1,
+          pageSize: 20,
+          studentTeacherId: keyword,
+        }),
+      ]);
+
+      const merged = new Map<number, PatientProfileListDTO>();
+      responses.forEach(({ data }) => {
+        (data.list || []).forEach((item) => merged.set(item.userId, item));
+      });
+
+      emergencyPatientOptions.value = Array.from(merged.values());
+    } catch (err) {
+      handleRequestError(err, 'schedulePatients.message.searchPatientError');
+    } finally {
+      emergencySearchLoading.value = false;
+    }
   };
 
   const getLatestAppointment = async (patientUserId: number) => {
@@ -473,6 +553,25 @@
       'schedulePatients.message.noShowError'
     );
 
+  const handleEmergencyAppoint = async () => {
+    if (!emergencySelectedPatientId.value) return;
+    try {
+      emergencyAppointLoading.value = true;
+      await emergencyAppointSchedule(
+        scheduleId.value,
+        emergencySelectedPatientId.value
+      );
+      Message.success(t('schedulePatients.message.emergencyAppointSuccess'));
+      await fetchPatients();
+      selectedPatientId.value = emergencySelectedPatientId.value;
+      await fetchPatientDetail(emergencySelectedPatientId.value);
+    } catch (err) {
+      handleRequestError(err, 'schedulePatients.message.emergencyAppointError');
+    } finally {
+      emergencyAppointLoading.value = false;
+    }
+  };
+
   const getIdentityTypeText = (type: number) => IDENTITY_TYPE_MAP[type] || '-';
 
   onMounted(() => {
@@ -509,6 +608,34 @@
       .arco-card-body {
         height: calc(100% - 60px);
         overflow-y: auto;
+      }
+    }
+
+    .emergency-appoint {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .patient-option {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      &__name {
+        font-weight: 600;
+        color: var(--color-text-1);
+      }
+
+      &__username {
+        color: var(--color-text-3);
+        margin-left: 4px;
+      }
+
+      &__meta {
+        font-size: 12px;
+        color: var(--color-text-3);
       }
     }
 

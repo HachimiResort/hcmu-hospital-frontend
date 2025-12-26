@@ -48,6 +48,14 @@ export default {
   'schedulePatients.message.completeError': 'Operation failed',
   'schedulePatients.message.noShowSuccess': 'Marked as no show',
   'schedulePatients.message.noShowError': 'Operation failed',
+  'schedulePatients.message.searchPatientError': 'Failed to search patients',
+  'schedulePatients.message.emergencyAppointSuccess':
+    'Emergency appointment created',
+  'schedulePatients.message.emergencyAppointError':
+    'Emergency appointment failed',
+  'schedulePatients.emergency.placeholder':
+    'Search patient by name/username/ID',
+  'schedulePatients.actions.emergencyAppoint': 'Emergency arrange',
 
   'workspace.noSchedule': 'You have no schedule for today',
   'workspace.request.title': 'Request Schedule Change',
