@@ -37,6 +37,9 @@ export interface PatientProfileGetRequestDTO {
   pageNum?: number;
   pageSize?: number;
   identityType?: number;
+  userName?: string;
+  name?: string;
+  studentTeacherId?: string;
 }
 
 // 更新（管理员）

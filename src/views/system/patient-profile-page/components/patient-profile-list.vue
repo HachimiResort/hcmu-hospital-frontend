@@ -29,6 +29,19 @@
               </a-col>
               <a-col :span="12">
                 <a-form-item
+                  field="userName"
+                  :label="$t('patientProfilePage.form.userName')"
+                >
+                  <a-input
+                    v-model="formModel.userName"
+                    :placeholder="
+                      $t('patientProfilePage.form.userName.placeholder')
+                    "
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
                   field="name"
                   :label="$t('patientProfilePage.form.name')"
                 >
@@ -36,6 +49,19 @@
                     v-model="formModel.name"
                     :placeholder="
                       $t('patientProfilePage.form.name.placeholder')
+                    "
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  field="studentTeacherId"
+                  :label="$t('patientProfilePage.form.studentTeacherId')"
+                >
+                  <a-input
+                    v-model="formModel.studentTeacherId"
+                    :placeholder="
+                      $t('patientProfilePage.form.studentTeacherId.placeholder')
                     "
                   />
                 </a-form-item>
@@ -157,7 +183,9 @@
   // 表单数据
   const formModel = reactive<any>({
     identityType: undefined,
+    userName: '',
     name: '',
+    studentTeacherId: '',
     pageNum: 1,
     pageSize: 10,
   });
@@ -264,7 +292,9 @@
   // 重置
   const reset = () => {
     formModel.identityType = undefined;
+    (formModel as any).userName = '';
     (formModel as any).name = '';
+    (formModel as any).studentTeacherId = '';
     search();
   };
 
